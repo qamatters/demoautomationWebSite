@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Picker Playground</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+      <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+      <li><a href="../demo-form.html" class="hover:bg-purple-900 px-3 py-2 rounded">Demo Form</a></li>
+      <li><a href="../records.html" class="hover:bg-purple-900 px-3 py-2 rounded">Records</a></li>
+      <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+      <li><a href="../order.html" class="hover:bg-purple-900 px-3 py-2 rounded">Order Creation</a></li>
+    </ul>
+  </nav>
+
+  <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow space-y-6">
+    <h1 class="text-2xl font-bold mb-4">Color Picker Automation Playground</h1>
+
+    <!-- Normal color picker -->
+    <div>
+      <label for="color1" class="block mb-1">Pick a color</label>
+      <input type="color" id="color1" class="w-16 h-10 p-0 border-0">
+    </div>
+
+    <!-- Color picker with default value -->
+    <div>
+      <label for="color2" class="block mb-1">Default color</label>
+      <input type="color" id="color2" value="#ff0000" class="w-16 h-10 p-0 border-0">
+    </div>
+
+    <!-- Disabled color picker -->
+    <div>
+      <label for="color3" class="block mb-1">Disabled color picker</label>
+      <input type="color" id="color3" value="#00ff00" disabled class="w-16 h-10 p-0 border-0">
+    </div>
+  </div>
+
+</body>
+</html>

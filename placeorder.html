@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Order</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get selected items from localStorage
+      const selectedItems = JSON.parse(localStorage.getItem('selectedOrderItems')) || [];
+      const tableBody = document.getElementById('itemsTableBody');
+      const totalSpan = document.getElementById('totalPrice');
+
+      let subtotal = 0;
+
+      selectedItems.forEach((item, index) => {
+        const quantity = 1; // Default quantity 1, can enhance later
+        subtotal += item.price * quantity;
+
+        const row = document.createElement('tr');
+        row.className = 'border-b';
+        row.innerHTML = `
+          <td class="px-4 py-2">${item.name}</td>
+          <td class="px-4 py-2 text-center">${quantity}</td>
+          <td class="px-4 py-2 text-right">$${item.price}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      const tax = subtotal * 0.1; // 10% tax
+      const total = subtotal + tax;
+      totalSpan.textContent = `$${total.toFixed(2)}`;
+
+      // Place order button
+      document.getElementById('placeOrderBtn').addEventListener('click', () => {
+        alert('Your order has been placed successfully!');
+        localStorage.removeItem('selectedOrderItems');
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</head>
+<body class="bg-gray-100">
+  <!-- Navbar -->
+  <nav class="bg-purple-400 p-4 text-white">
+    <ul class="flex space-x-4">
+      <li><a href="index.html" class="hover:underline">Home</a></li>
+      <li><a href="demo-form.html" class="hover:underline">Demo Form</a></li>
+      <li><a href="records.html" class="hover:underline">Records</a></li>
+      <li><a href="fields.html" class="hover:underline">Fields</a></li>
+      <li><a href="order.html" class="hover:underline">Order Creation</a></li>
+      <li><span class="font-bold">Place Order</span></li>
+    </ul>
+  </nav>
+
+  <div class="max-w-5xl mx-auto p-6 space-y-6">
+    <h2 class="text-3xl font-bold text-center">Place Your Order</h2>
+
+    <!-- Items Table -->
+    <div class="bg-white shadow rounded-lg p-4">
+      <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+      <table class="w-full table-auto border-collapse">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-4 py-2 text-left">Item Name</th>
+            <th class="px-4 py-2 text-center">Quantity</th>
+            <th class="px-4 py-2 text-right">Price</th>
+          </tr>
+        </thead>
+        <tbody id="itemsTableBody">
+          <!-- JS will populate items here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Total Price Section (iframe style) -->
+    <div class="bg-white shadow rounded-lg p-4">
+      <h3 class="text-xl font-semibold mb-4">Total (including 10% tax)</h3>
+      <div class="text-2xl font-bold text-right" id="totalPrice">$0.00</div>
+    </div>
+
+    <!-- User Info & Card Details -->
+    <div class="bg-white shadow rounded-lg p-4 space-y-4">
+      <h3 class="text-xl font-semibold mb-2">User Information</h3>
+      <input type="text" placeholder="Full Name" class="w-full border rounded p-2">
+      <input type="email" placeholder="Email" class="w-full border rounded p-2">
+      <input type="text" placeholder="Address" class="w-full border rounded p-2">
+      <h3 class="text-xl font-semibold mt-4 mb-2">Card Details</h3>
+      <input type="text" placeholder="Card Number" class="w-full border rounded p-2">
+      <div class="flex gap-4">
+        <input type="text" placeholder="Expiry MM/YY" class="w-1/2 border rounded p-2">
+        <input type="text" placeholder="CVV" class="w-1/2 border rounded p-2">
+      </div>
+      <button id="placeOrderBtn" class="bg-green-600 text-white px-6 py-3 rounded mt-4 w-full hover:bg-green-700">
+        Place Order
+      </button>
+    </div>
+  </div>
+</body>
+</html>

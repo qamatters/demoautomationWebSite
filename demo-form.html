@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation Playground</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // === Country-State-City Data ===
+  const data = {
+    India: { Maharashtra:['Mumbai','Pune'], Karnataka:['Bengaluru','Mysore'] },
+    USA: { California:['LA','SF'], Texas:['Houston','Dallas'] }
+  };
+  const countrySelect = document.getElementById('country');
+  const stateSelect = document.getElementById('state');
+  const citySelect = document.getElementById('city');
+
+  countrySelect.addEventListener('change', () => {
+    const country = countrySelect.value;
+    if(country) alert(`You selected country: ${country}`);
+    stateSelect.innerHTML = '<option value="">Select State</option>';
+    citySelect.innerHTML = '<option value="">Select City</option>';
+    if(country && data[country]){
+      Object.keys(data[country]).forEach(state=>{
+        const opt=document.createElement('option'); opt.value=state; opt.textContent=state;
+        stateSelect.appendChild(opt);
+      });
+    }
+  });
+
+  stateSelect.addEventListener('change', () => {
+    const country = countrySelect.value;
+    const state = stateSelect.value;
+    citySelect.innerHTML = '<option value="">Select City</option>';
+    if(country && state && data[country][state]){
+      data[country][state].forEach(city=>{
+        const opt=document.createElement('option'); opt.value=city; opt.textContent=city;
+        citySelect.appendChild(opt);
+      });
+    }
+  });
+
+  // === File Download ===
+  document.getElementById('downloadFile').addEventListener('click', ()=>{
+    const link=document.createElement('a'); link.href='files/sample.pdf';
+    link.download='sample.pdf'; link.click();
+  });
+
+  // === Modal ===
+  const modal = document.getElementById('modal');
+  const openModalBtn = document.getElementById('openModal');
+  const closeModalBtn = document.getElementById('closeModal');
+  openModalBtn.addEventListener('click', ()=>{ modal.classList.remove('hidden'); });
+  closeModalBtn.addEventListener('click', ()=>{ modal.classList.add('hidden'); });
+
+  // === Tooltip ===
+  const tooltip = document.getElementById('tooltipText');
+  document.getElementById('tooltipBtn').addEventListener('mouseenter', ()=>{ tooltip.classList.remove('hidden'); });
+  document.getElementById('tooltipBtn').addEventListener('mouseleave', ()=>{ tooltip.classList.add('hidden'); });
+
+  // === Toast Notification ===
+  document.getElementById('toastBtn').addEventListener('click', ()=>{
+    const toast = document.getElementById('toast');
+    toast.classList.remove('hidden');
+    setTimeout(()=>{ toast.classList.add('hidden'); }, 3000);
+  });
+
+});
+</script>
+
+</head>
+
+<nav class="bg-purple-400 p-4 text-white">
+  <ul class="flex space-x-4">
+    <li><a href="index.html" class="hover:underline">Home</a></li>
+    <li><a href="demo-form.html" class="hover:underline">Demo Form</a></li>
+    <li><a href="records.html" class="hover:underline">Records</a></li>
+    <li><a href="fields.html" class="hover:underline">Fields</a></li>
+    <li><a href="order.html" class="hover:underline">Order Creation</a></li>
+  </ul>
+</nav>
+<body class="bg-gray-100 p-6">
+<div class="max-w-5xl mx-auto bg-white shadow-md rounded p-6 space-y-6">
+
+  <h2 class="text-3xl font-bold text-center">Automation Playground</h2>
+
+  <!-- Shadow Info Box -->
+  <div class="bg-purple-100 p-4 rounded-lg shadow-lg">
+    <h3 class="font-bold text-lg mb-2">Instructions</h3>
+    <ul class="list-disc pl-5 text-gray-700">
+      <li>Practice all input types, dropdowns, tables, modals, iframes.</li>
+      <li>Use the buttons to test alerts, toast notifications, and file download.</li>
+      <li>Explore shadowed info boxes, tooltip hover, and dynamic table data.</li>
+    </ul>
+  </div>
+
+  <!-- Advanced Form -->
+  <form action="records.html" method="GET" class="space-y-4">
+
+    <!-- Basic Inputs -->
+    <input type="text" name="fullname" placeholder="Full Name" class="w-full border p-2 rounded">
+    <input type="password" name="password" placeholder="Password" class="w-full border p-2 rounded">
+    <textarea name="comments" placeholder="Comments" class="w-full border p-2 rounded"></textarea>
+    <input type="number" name="age" placeholder="Age" class="w-full border p-2 rounded">
+    <input type="email" name="email" placeholder="Email" class="w-full border p-2 rounded">
+    <input type="url" name="website" placeholder="Website URL" class="w-full border p-2 rounded">
+    <input type="tel" name="phone" placeholder="Phone Number" class="w-full border p-2 rounded">
+
+    <!-- Radio & Checkbox -->
+    <div>
+      <label>Gender:</label>
+      <label><input type="radio" name="gender" value="Male"> Male</label>
+      <label><input type="radio" name="gender" value="Female"> Female</label>
+    </div>
+    <div>
+      <label>Skills:</label>
+      <label><input type="checkbox" name="skills" value="Selenium"> Selenium</label>
+      <label><input type="checkbox" name="skills" value="Playwright"> Playwright</label>
+      <label><input type="checkbox" name="skills" value="API Testing"> API Testing</label>
+    </div>
+
+    <!-- Dropdowns -->
+    <select name="experience" class="border p-2 rounded w-full">
+      <option value="">Select Experience</option>
+      <option value="Beginner">Beginner</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advanced">Advanced</option>
+    </select>
+    <select id="country" name="country" class="border p-2 rounded w-full">
+      <option value="">Select Country</option>
+      <option value="India">India</option>
+      <option value="USA">USA</option>
+    </select>
+    <select id="state" name="state" class="border p-2 rounded w-full">
+      <option value="">Select State</option>
+    </select>
+    <select id="city" name="city" class="border p-2 rounded w-full">
+      <option value="">Select City</option>
+    </select>
+
+    <!-- Date/Time -->
+    <input type="date" name="dob" class="w-full border p-2 rounded">
+    <input type="time" name="time" class="w-full border p-2 rounded">
+    <input type="datetime-local" name="datetime" class="w-full border p-2 rounded">
+    <input type="month" name="month" class="w-full border p-2 rounded">
+    <input type="week" name="week" class="w-full border p-2 rounded">
+
+    <!-- Color, Range, Search -->
+    <input type="color" name="favcolor" class="w-full p-2 rounded">
+    <input type="range" name="volume" min="0" max="100" class="w-full">
+    <input type="search" name="search" placeholder="Search something" class="w-full border p-2 rounded">
+
+    <!-- File Download & Upload -->
+    <button type="button" id="downloadFile" class="bg-blue-500 text-white px-4 py-2 rounded">Download File</button>
+    <input type="file" name="uploadfile" class="w-full border p-2 rounded">
+
+    <!-- Useful Links -->
+    <div class="text-blue-600 space-y-1">
+      <a href="https://www.selenium.dev" target="_blank">Selenium</a><br>
+      <a href="https://playwright.dev" target="_blank">Playwright</a><br>
+      <a href="https://www.postman.com" target="_blank">Postman</a>
+    </div>
+
+    <!-- Iframe -->
+    <iframe srcdoc='
+      <div style="padding:10px;">
+        <input type="radio" name="iframeRadio" value="Yes">Yes
+        <input type="radio" name="iframeRadio" value="No">No<br>
+        <input type="checkbox" name="iframeCheck" value="Option1"> Option1
+        <input type="checkbox" name="iframeCheck" value="Option2"> Option2<br>
+        <input type="text" name="iframeText" placeholder="Enter text">
+      </div>
+    ' class="w-full h-40 border rounded"></iframe>
+
+    <!-- Hidden Field -->
+    <input type="hidden" name="hiddenField" value="HiddenValue">
+
+    <!-- Tooltip & Toast -->
+    <button type="button" id="tooltipBtn" class="bg-indigo-500 text-white px-4 py-2 rounded mt-2">Hover Tooltip</button>
+    <div id="tooltipText" class="hidden absolute bg-gray-700 text-white p-2 rounded mt-1">Tooltip Info!</div>
+    <button type="button" id="toastBtn" class="bg-yellow-500 text-white px-4 py-2 rounded mt-2">Show Toast</button>
+    <div id="toast" class="hidden fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded">Action Successful!</div>
+
+    <!-- Progress -->
+    <label>Progress:</label>
+    <progress value="50" max="100" class="w-full"></progress>
+
+    <!-- Buttons -->
+    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">Submit</button>
+    <button type="reset" class="bg-gray-500 text-white px-6 py-2 rounded">Reset</button>
+    <button type="button" id="openModal" class="bg-purple-600 text-white px-6 py-2 rounded">Open Modal</button>
+
+  </form>
+
+  <!-- Sample Table -->
+  <div class="overflow-x-auto mt-6">
+    <h3 class="font-bold text-lg mb-2">Sample Data Table</h3>
+    <table class="min-w-full border border-gray-300 text-left">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="px-4 py-2 border">Name</th>
+          <th class="px-4 py-2 border">Country</th>
+          <th class="px-4 py-2 border">City</th>
+          <th class="px-4 py-2 border">Skills</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bg-white hover:bg-gray-100">
+          <td class="px-4 py-2 border">Alice</td>
+          <td class="px-4 py-2 border">India</td>
+          <td class="px-4 py-2 border">Mumbai</td>
+          <td class="px-4 py-2 border">Selenium, API Testing</td>
+        </tr>
+        <tr class="bg-white hover:bg-gray-100">
+          <td class="px-4 py-2 border">Bob</td>
+          <td class="px-4 py-2 border">USA</td>
+          <td class="px-4 py-2 border">Dallas</td>
+          <td class="px-4 py-2 border">Playwright</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white p-6 rounded shadow-lg w-96">
+    <h3 class="text-xl font-bold mb-4">Modal Title</h3>
+    <p>This is a modal popup. You can put any content here.</p>
+    <button id="closeModal" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Close</button>
+  </div>
+</div>
+
+</body>
+</html>

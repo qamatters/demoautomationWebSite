@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fund Transfer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-purple-600 text-white p-4 flex justify-between items-center shadow-lg">
+  <h1 class="text-xl font-bold">Automation Playground</h1>
+  <div class="space-x-6">
+    <a href="dashboard.html" class="hover:text-gray-200">Dashboard</a>
+    <a href="transfer.html" class="hover:text-gray-200 underline font-semibold">Fund Transfer</a>
+    <a href="payees.html" class="hover:text-gray-200">Payees</a>
+    <a href="history.html" class="hover:text-gray-200">Transaction History</a>
+  </div>
+</nav>
+
+<!-- Transfer Form -->
+<div class="max-w-4xl mx-auto mt-8 bg-white p-6 rounded-2xl shadow-lg">
+  <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Fund Transfer</h2>
+
+  <!-- Payee Selection -->
+  <label for="payeeSelect" class="block text-lg font-medium mb-2">Select Payee:</label>
+  <select id="payeeSelect" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4">
+    <option value="">--Select Payee--</option>
+  </select>
+
+  <!-- Destination Account -->
+  <label for="destAccount" class="block text-lg font-medium mb-2">Destination Account:</label>
+  <input id="destAccount" type="text" class="w-full p-3 border rounded-lg mb-4" readonly>
+
+  <!-- Amount -->
+  <label for="amount" class="block text-lg font-medium mb-2">Amount:</label>
+  <input id="amount" type="number" class="w-full p-3 border rounded-lg mb-4">
+
+  <!-- Description -->
+  <label for="description" class="block text-lg font-medium mb-2">Description:</label>
+  <input id="description" type="text" class="w-full p-3 border rounded-lg mb-4">
+
+  <button id="transferBtn" class="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700">Transfer</button>
+</div>
+
+<script>
+  const payeeSelect = document.getElementById('payeeSelect');
+  const destAccount = document.getElementById('destAccount');
+  const transferBtn = document.getElementById('transferBtn');
+
+  // ===== Load payees from localStorage =====
+  function getPayees() {
+    return JSON.parse(localStorage.getItem('payees') || '[]');
+  }
+
+  // Populate payee dropdown
+  function populatePayees() {
+    const payees = getPayees();
+    payeeSelect.innerHTML = '<option value="">--Select Payee--</option>';
+    payees.forEach((p, idx) => {
+      payeeSelect.innerHTML += `<option value="${idx}">${p.name} (${p.bank})</option>`;
+    });
+  }
+
+  // Auto-fill destination account when payee selected
+  payeeSelect.addEventListener('change', () => {
+    const idx = payeeSelect.value;
+    if(idx === '') {
+      destAccount.value = '';
+      return;
+    }
+    const payee = getPayees()[idx];
+    destAccount.value = payee.account;
+  });
+
+  // ===== Handle Transfer =====
+  transferBtn.addEventListener('click', () => {
+    const idx = payeeSelect.value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    const description = document.getElementById('description').value.trim();
+
+    if(idx === '') return alert('Please select a payee!');
+    if(!amount || amount <= 0) return alert('Please enter a valid amount!');
+    
+    const payee = getPayees()[idx];
+    const newTransfer = {
+      datetime: new Date().toISOString(),
+      payee: payee.name,
+      account: payee.account,
+      amount: amount,
+      description: description || 'Fund Transfer'
+    };
+
+    // Save to localStorage (for history)
+    const transfers = JSON.parse(localStorage.getItem('transfers') || '[]');
+    transfers.unshift(newTransfer); // add latest at top
+    localStorage.setItem('transfers', JSON.stringify(transfers));
+
+    alert(`₹${amount} transferred to ${payee.name} successfully!`);
+    document.getElementById('amount').value = '';
+    document.getElementById('description').value = '';
+    payeeSelect.value = '';
+    destAccount.value = '';
+  });
+
+  // Initial population
+  populatePayees();
+</script>
+
+</body>
+</html>

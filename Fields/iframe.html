@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iframe Playground</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen relative">
+
+  <!-- Navbar -->
+  <nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+      <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+      <li><a href="../demo-form.html" class="hover:bg-purple-900 px-3 py-2 rounded">Demo Form</a></li>
+      <li><a href="../records.html" class="hover:bg-purple-900 px-3 py-2 rounded">Records</a></li>
+      <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+      <li><a href="../order.html" class="hover:bg-purple-900 px-3 py-2 rounded">Order Creation</a></li>
+    </ul>
+
+    <!-- Info Icon -->
+    <button id="infoBtn" class="bg-yellow-300 text-gray-800 p-2 rounded-full hover:bg-yellow-400">
+      &#9432;
+    </button>
+  </nav>
+
+  <!-- Info Modal -->
+  <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-11/12 md:w-1/2 relative">
+      <h2 class="text-xl font-bold mb-4">Iframe Use Cases</h2>
+      <ol class="list-decimal list-inside space-y-1 text-gray-700">
+        <li>Basic Iframe</li>
+        <li>Iframe with Input Fields</li>
+        <li>Nested Iframes</li>
+        <li>Dynamic Iframe</li>
+        <li>Cross-domain Iframe</li>
+        <li>Iframe with Scrollable Content</li>
+        <li>Iframe with Interactive Elements</li>
+        <li>Iframe with Alerts/Popups</li>
+        <li>Iframe with Delayed Load</li>
+        <li>Responsive Iframe</li>
+      </ol>
+      <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-lg font-bold">&times;</button>
+    </div>
+  </div>
+
+  <!-- Iframe Playground Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 m-4">
+
+    <!-- 1. Basic Iframe -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">1. Basic Iframe</h3>
+      <iframe src="https://testwithease.blogspot.com" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe src=&quot;https://testwithease.blogspot.com&quot; class=&quot;w-full h-40 border rounded&quot;></iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+    </div>
+
+    <!-- 2. Iframe with Input Fields -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">2. Iframe with Input Fields</h3>
+      <iframe id="iframeForm" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe>...input fields...</iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+      <script>
+        const iframeForm = document.getElementById('iframeForm').contentWindow.document;
+        iframeForm.open();
+        iframeForm.write('<input type="text" placeholder="Enter Name" id="name" class="border p-1 rounded m-1"><button id="submitBtn" class="bg-purple-700 text-white px-2 py-1 rounded">Submit</button>');
+        iframeForm.close();
+      </script>
+    </div>
+
+    <!-- 3. Nested Iframes -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">3. Nested Iframes</h3>
+      <iframe class="w-full h-40 border rounded mb-2">
+        <iframe src="https://testwithease.blogspot.com" class="w-full h-20 border mt-2"></iframe>
+      </iframe>
+      <button onclick="copyIframe('<iframe><iframe src=&quot;https://testwithease.blogspot.com&quot;></iframe></iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+    </div>
+
+    <!-- 4. Dynamic Iframe -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">4. Dynamic Iframe</h3>
+      <button onclick="document.getElementById('dynamicIframe').src='https://testwithease.blogspot.com'" class="bg-purple-700 text-white px-3 py-1 rounded mb-2">Load Iframe</button>
+      <iframe id="dynamicIframe" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe id=&quot;dynamicIframe&quot;></iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+    </div>
+
+    <!-- 5. Cross-domain Iframe -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">5. Cross-domain Iframe</h3>
+      <iframe src="https://www.wikipedia.org" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe src=&quot;https://www.wikipedia.org&quot;></iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+    </div>
+
+    <!-- 6. Scrollable Iframe -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">6. Scrollable Iframe</h3>
+      <iframe src="https://en.wikipedia.org/wiki/Main_Page" class="w-full h-40 border rounded overflow-auto mb-2"></iframe>
+      <button onclick="copyIframe('<iframe src=&quot;https://en.wikipedia.org/wiki/Main_Page&quot;></iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+    </div>
+
+    <!-- 7. Iframe with Interactive Elements -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">7. Iframe with Interactive Elements</h3>
+      <iframe id="interactiveIframe" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe>...interactive elements...</iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+      <script>
+        const interactiveIframe = document.getElementById('interactiveIframe').contentWindow.document;
+        interactiveIframe.open();
+        interactiveIframe.write('<input type="checkbox" id="agree"> Agree<br><select id="dropdown" class="border p-1 rounded"><option>Option 1</option><option>Option 2</option></select>');
+        interactiveIframe.close();
+      </script>
+    </div>
+
+    <!-- 8. Iframe with Alerts -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">8. Iframe with Alerts/Popups</h3>
+      <iframe id="alertIframe" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe>...alert button...</iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+      <script>
+        const alertIframe = document.getElementById('alertIframe').contentWindow.document;
+        alertIframe.open();
+        alertIframe.write('<button onclick="alert(\'Hello from iframe\')" class="bg-purple-700 text-white px-2 py-1 rounded">Show Alert</button>');
+        alertIframe.close();
+      </script>
+    </div>
+
+    <!-- 9. Delayed Load Iframe -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">9. Delayed Load Iframe</h3>
+      <iframe id="delayedIframe" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe id=&quot;delayedIframe&quot;></iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+      <script>
+        setTimeout(() => { document.getElementById('delayedIframe').src='https://testwithease.blogspot.com'; }, 3000);
+      </script>
+    </div>
+
+    <!-- 10. Responsive Iframe -->
+    <div class="bg-white p-4 rounded shadow relative">
+      <h3 class="font-semibold mb-2">10. Responsive Iframe</h3>
+      <iframe src="https://testwithease.blogspot.com" class="w-full h-40 border rounded mb-2"></iframe>
+      <button onclick="copyIframe('<iframe src=&quot;https://testwithease.blogspot.com&quot;></iframe>')" class="bg-purple-700 text-white px-3 py-1 rounded absolute top-2 right-2">Copy HTML</button>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Modal logic
+    const infoBtn = document.getElementById('infoBtn');
+    const infoModal = document.getElementById('infoModal');
+    const closeModal = document.getElementById('closeModal');
+
+    infoBtn.addEventListener('click', () => infoModal.classList.remove('hidden'));
+    closeModal.addEventListener('click', () => infoModal.classList.add('hidden'));
+    window.addEventListener('click', e => { if(e.target === infoModal) infoModal.classList.add('hidden'); });
+
+    // Copy iframe HTML
+    function copyIframe(content) {
+      navigator.clipboard.writeText(content).then(() => alert('Iframe HTML copied to clipboard!'));
+    }
+  </script>
+
+</body>
+</html>

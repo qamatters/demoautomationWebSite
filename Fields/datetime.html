@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date & Time Playground</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+      <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+      <li><a href="../demo-form.html" class="hover:bg-purple-900 px-3 py-2 rounded">Demo Form</a></li>
+      <li><a href="../records.html" class="hover:bg-purple-900 px-3 py-2 rounded">Records</a></li>
+      <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+      <li><a href="../order.html" class="hover:bg-purple-900 px-3 py-2 rounded">Order Creation</a></li>
+    </ul>
+  </nav>
+
+  <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow space-y-6">
+    <h1 class="text-2xl font-bold mb-4">Date & Time Fields Automation Playground</h1>
+
+    <!-- Date Picker -->
+    <div>
+      <label for="date1" class="block mb-1">Normal Date Picker</label>
+      <input type="date" id="date1" class="border rounded p-2 w-full">
+    </div>
+
+    <!-- Date with min/max -->
+    <div>
+      <label for="date2" class="block mb-1">Date with Min/Max (2025-01-01 to 2025-12-31)</label>
+      <input type="date" id="date2" min="2025-01-01" max="2025-12-31" class="border rounded p-2 w-full">
+    </div>
+
+    <!-- Disabled Date Picker -->
+    <div>
+      <label for="date3" class="block mb-1">Disabled Date Picker</label>
+      <input type="date" id="date3" disabled class="border rounded p-2 w-full bg-gray-200 cursor-not-allowed">
+    </div>
+
+    <!-- Date with default value -->
+    <div>
+      <label for="date4" class="block mb-1">Date with Default Value</label>
+      <input type="date" id="date4" value="2025-08-24" class="border rounded p-2 w-full">
+    </div>
+
+    <!-- Time Picker -->
+    <div>
+      <label for="time1" class="block mb-1">Normal Time Picker</label>
+      <input type="time" id="time1" class="border rounded p-2 w-full">
+    </div>
+
+    <!-- Time Picker with step -->
+    <div>
+      <label for="time2" class="block mb-1">Time Picker with Step (15 min)</label>
+      <input type="time" id="time2" step="900" class="border rounded p-2 w-full">
+    </div>
+
+    <!-- Disabled Time Picker -->
+    <div>
+      <label for="time3" class="block mb-1">Disabled Time Picker</label>
+      <input type="time" id="time3" disabled class="border rounded p-2 w-full bg-gray-200 cursor-not-allowed">
+    </div>
+
+    <!-- DateTime-local Picker -->
+    <div>
+      <label for="datetime1" class="block mb-1">DateTime-Local Picker</label>
+      <input type="datetime-local" id="datetime1" class="border rounded p-2 w-full">
+    </div>
+  </div>
+
+</body>
+</html>

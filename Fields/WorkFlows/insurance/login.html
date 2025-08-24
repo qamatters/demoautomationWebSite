@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Insurance Simulation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
+<nav class="bg-purple-400 p-4 text-white flex justify-between items-center">
+  <ul class="flex space-x-4">
+    <li><a href="../../../fields.html" class="hover:underline">Fields</a></li>
+  </ul>
+</nav>
+
+<!-- Login Container -->
+<div class="flex items-center justify-center h-screen">
+  <div class="bg-white p-8 rounded shadow w-full max-w-md text-center">
+    <h1 class="text-2xl font-bold mb-6">Insurance Simulation Login</h1>
+    <div class="flex justify-around mb-6">
+      <button class="bg-purple-600 text-white px-4 py-2 rounded" onclick="showUserLogin()">User Login</button>
+      <button class="bg-red-600 text-white px-4 py-2 rounded" onclick="showAdminLogin()">Admin Login</button>
+    </div>
+
+    <!-- User Login Form -->
+    <div id="userLogin" class="hidden">
+      <input type="text" id="username" placeholder="Username" class="w-full border p-2 rounded mb-4">
+      <input type="password" id="password" placeholder="Password" class="w-full border p-2 rounded mb-4">
+      <button class="bg-purple-600 text-white w-full py-2 rounded" onclick="loginUser()">Login as User</button>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div id="adminLogin" class="hidden">
+      <input type="text" id="adminUsername" placeholder="Username" class="w-full border p-2 rounded mb-4">
+      <input type="password" id="adminPassword" placeholder="Password" class="w-full border p-2 rounded mb-4">
+      <button class="bg-red-600 text-white w-full py-2 rounded" onclick="loginAdmin()">Login as Admin</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showUserLogin(){
+  document.getElementById('userLogin').classList.remove('hidden');
+  document.getElementById('adminLogin').classList.add('hidden');
+}
+function showAdminLogin(){
+  document.getElementById('adminLogin').classList.remove('hidden');
+  document.getElementById('userLogin').classList.add('hidden');
+}
+
+const users = [{username:'user1', password:'user123'}, {username:'user2', password:'user123'}];
+const admin = {username:'admin', password:'admin123'};
+
+function loginUser(){
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const validUser = users.find(u => u.username===username && u.password===password);
+  if(validUser){
+    sessionStorage.setItem('role','user');
+    sessionStorage.setItem('username', username);
+    window.location.href = 'insurance.html';
+  } else alert('Invalid credentials. Try user1/user123 or user2/user123');
+}
+
+function loginAdmin(){
+  const username = document.getElementById('adminUsername').value;
+  const password = document.getElementById('adminPassword').value;
+  if(username===admin.username && password===admin.password){
+    sessionStorage.setItem('role','admin');
+    sessionStorage.setItem('username','admin');
+    window.location.href = 'dashboard.html';
+  } else alert('Invalid credentials. Try admin/admin123');
+}
+</script>
+</body>
+</html>

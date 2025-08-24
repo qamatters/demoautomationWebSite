@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="claims.js"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="flex justify-end mb-4">
+  <span class="mr-4 font-bold">Logged in as: Admin</span>
+  <button class="bg-gray-500 text-white px-3 py-1 rounded" onclick="logout()">Logout</button>
+</div>
+
+<h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+
+<!-- Summary Cards -->
+<div class="grid grid-cols-4 gap-6 mb-6">
+  <div class="bg-white p-6 rounded shadow text-center">
+    <h3 class="text-gray-500">Total Claims</h3>
+    <p class="text-2xl font-bold" id="totalClaims"></p>
+  </div>
+  <div class="bg-white p-6 rounded shadow text-center">
+    <h3 class="text-gray-500">Approved</h3>
+    <p class="text-2xl font-bold text-green-500" id="approvedClaims"></p>
+  </div>
+  <div class="bg-white p-6 rounded shadow text-center">
+    <h3 class="text-gray-500">Under Review</h3>
+    <p class="text-2xl font-bold text-yellow-500" id="reviewClaims"></p>
+  </div>
+  <div class="bg-white p-6 rounded shadow text-center">
+    <h3 class="text-gray-500">Rejected</h3>
+    <p class="text-2xl font-bold text-red-500" id="rejectedClaims"></p>
+  </div>
+</div>
+
+<!-- Claim Table -->
+<table class="min-w-full border border-gray-200 text-left mb-4">
+  <thead class="bg-gray-200">
+    <tr>
+      <th class="p-2 border">ID</th>
+      <th class="p-2 border">Policy</th>
+      <th class="p-2 border">Type</th>
+      <th class="p-2 border">Amount</th>
+      <th class="p-2 border">Status</th>
+      <th class="p-2 border">Date</th>
+      <th class="p-2 border">User</th>
+      <th class="p-2 border">Action</th>
+    </tr>
+  </thead>
+  <tbody id="claimsTable"></tbody>
+</table>
+
+<script>
+if(sessionStorage.getItem('role')!=='admin'){ window.location.href='login.html'; }
+
+function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
+
+function approveClaim(id){ changeStatus(id,'Approved'); renderTable(); }
+function rejectClaim(id){ changeStatus(id,'Rejected'); renderTable(); }
+function settleClaim(id){ changeStatus(id,'Settled'); renderTable(); }
+
+function renderTable(){
+  const tbody = document.getElementById('claimsTable');
+  tbody.innerHTML='';
+  claims.forEach(c=>{
+    tbody.innerHTML+=`<tr>
+      <td class="p-2 border">${c.id}</td>
+      <td class="p-2 border">${c.policy}</td>
+      <td class="p-2 border">${c.type}</td>
+      <td class="p-2 border">$${c.amount}</td>
+      <td class="p-2 border">${c.status}</td>
+      <td class="p-2 border">${c.date}</td>
+      <td class="p-2 border">${c.submittedBy}</td>
+      <td class="p-2 border">
+        ${c.status==='Review'?`<button class="bg-green-500 text-white px-2 py-1 rounded" onclick="approveClaim('${c.id}')">Approve</button>
+        <button class="bg-red-500 text-white px-2 py-1 rounded ml-1" onclick="rejectClaim('${c.id}')">Reject</button>
+        <button class="bg-gray-500 text-white px-2 py-1 rounded ml-1" onclick="settleClaim('${c.id}')">Settle</button>`:'--'}
+      </td>
+    </tr>`;
+  });
+
+  // Update summary cards
+  document.getElementById('totalClaims').innerText = claims.length;
+  document.getElementById('approvedClaims').innerText = claims.filter(c=>c.status==='Approved').length;
+  document.getElementById('reviewClaims').innerText = claims.filter(c=>c.status==='Review').length;
+  document.getElementById('rejectedClaims').innerText = claims.filter(c=>c.status==='Rejected').length;
+}
+renderTable();
+</script>
+</body>
+</html>

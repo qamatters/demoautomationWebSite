@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User - Insurance</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="claims.js"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<!-- Logout & Username -->
+<div class="flex justify-end mb-4">
+  <span class="mr-4 font-bold">Logged in as: <span id="loggedUser"></span></span>
+  <button class="bg-gray-500 text-white px-3 py-1 rounded" onclick="logout()">Logout</button>
+</div>
+
+<h1 class="text-2xl font-bold mb-4">Submit Your Claim</h1>
+<div class="bg-white p-6 rounded shadow mb-6 flex flex-col md:flex-row gap-4 items-center">
+  <input type="text" id="policy" placeholder="Policy Number" class="border p-2 rounded flex-1">
+  <select id="claimType" class="border p-2 rounded flex-1">
+    <option value="Health">Health</option>
+    <option value="Vehicle">Vehicle</option>
+    <option value="Life">Life</option>
+  </select>
+  <input type="number" id="claimAmount" placeholder="Claim Amount" class="border p-2 rounded flex-1">
+  <input type="file" id="claimFile" class="border p-2 rounded flex-1" accept=".jpg,.png,.pdf">
+  <span id="filePreview" class="text-gray-600"></span>
+  <button class="bg-green-500 text-white px-4 py-2 rounded" onclick="submitClaim()">Submit</button>
+</div>
+
+<h2 class="text-xl font-bold mb-2">My Claims</h2>
+<table class="min-w-full border border-gray-200 text-left mb-4">
+  <thead class="bg-gray-200">
+    <tr>
+      <th class="p-2 border">Claim ID</th>
+      <th class="p-2 border">Policy No</th>
+      <th class="p-2 border">Type</th>
+      <th class="p-2 border">Amount</th>
+      <th class="p-2 border">Status</th>
+      <th class="p-2 border">Date</th>
+    </tr>
+  </thead>
+  <tbody id="claimsTable"></tbody>
+</table>
+
+<script>
+const username = sessionStorage.getItem('username');
+if(sessionStorage.getItem('role')!=='user'){ window.location.href='login.html'; }
+document.getElementById('loggedUser').innerText=username;
+
+// File preview
+document.getElementById('claimFile').addEventListener('change', function(){
+  const file = this.files[0];
+  if(file) document.getElementById('filePreview').innerText = file.name;
+});
+
+function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
+
+function submitClaim(){
+  const policy = document.getElementById('policy').value;
+  const type = document.getElementById('claimType').value;
+  const amount = document.getElementById('claimAmount').value;
+  const file = document.getElementById('claimFile').files[0];
+  if(!policy||!type||!amount||!file){ alert('Fill all fields'); return; }
+  claims.push({id:nextClaimId(), policy, type, amount, status:'Review', date:new Date().toISOString().split('T')[0], submittedBy:username});
+  document.getElementById('policy').value=''; document.getElementById('claimAmount').value=''; document.getElementById('claimFile').value=''; document.getElementById('filePreview').innerText='';
+  renderTable();
+  alert('Claim submitted successfully!');
+}
+
+function renderTable(){
+  const tbody = document.getElementById('claimsTable');
+  const myClaims = claims.filter(c=>c.submittedBy===username);
+  tbody.innerHTML='';
+  myClaims.forEach(c=>tbody.innerHTML+=`<tr>
+    <td class="p-2 border">${c.id}</td>
+    <td class="p-2 border">${c.policy}</td>
+    <td class="p-2 border">${c.type}</td>
+    <td class="p-2 border">$${c.amount}</td>
+    <td class="p-2 border">${c.status}</td>
+    <td class="p-2 border">${c.date}</td>
+  </tr>`);
+}
+renderTable();
+</script>
+</body>
+</html>

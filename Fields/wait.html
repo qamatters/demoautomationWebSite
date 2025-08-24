@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wait Playground</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  #delayedElement { display: none; margin-top: 10px; }
+  .shadow-host { padding: 10px; margin-top: 10px; border: 1px solid #333; background-color: #f9f9f9; }
+
+  /* Circular loader */
+  .loader {
+    border: 6px solid #f3f3f3; /* Light grey */
+    border-top: 6px solid #3490dc; /* Blue spinner */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6 space-y-6">
+
+  <h2 class="text-3xl font-bold text-center mb-4">Wait Playground</h2>
+
+  <!-- waitForLoadState -->
+  <div>
+    <h3 class="font-bold">Page Load State</h3>
+    <p>Use <code>page.waitForLoadState()</code> to test page readiness.</p>
+  </div>
+
+  <!-- waitForSelector -->
+  <div>
+    <h3 class="font-bold">waitForSelector Example</h3>
+    <p>Delayed element appears after 3 seconds:</p>
+    <div id="delayedElement" class="p-2 border rounded bg-green-100">I appeared after 3 seconds!</div>
+  </div>
+
+  <!-- waitForURL -->
+  <div>
+    <h3 class="font-bold">waitForURL Example</h3>
+    <button id="changeUrlBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Change URL after 2 seconds</button>
+    <p>Current URL: <span id="currentUrl">#</span></p>
+  </div>
+
+  <!-- waitForEvent -->
+  <div>
+    <h3 class="font-bold">waitForEvent Example</h3>
+    <button id="popupBtn" class="bg-purple-500 text-white px-4 py-2 rounded">Open Popup</button>
+    <p>Simulates a popup event.</p>
+  </div>
+
+  <!-- waitForTimeout -->
+  <div>
+    <h3 class="font-bold">waitForTimeout Example</h3>
+    <button id="timeoutBtn" class="bg-red-500 text-white px-4 py-2 rounded"
+      onclick="setTimeout(()=>alert('Timeout completed!'), 2000)">Click for 2s Timeout</button>
+  </div>
+
+  <!-- Nested iframe -->
+  <div>
+    <h3 class="font-bold">Nested Iframe Field</h3>
+    <iframe id="nestedIframe" class="w-full h-24 border rounded" src="about:blank"></iframe>
+  </div>
+
+  <!-- Open Shadow DOM -->
+  <div>
+    <h3 class="font-bold">Open Shadow DOM</h3>
+    <div id="shadowHost" class="shadow-host"></div>
+  </div>
+
+  <!-- Submit Buttons with Loading -->
+  <div>
+    <h3 class="font-bold">Submit Button with Linear Loading</h3>
+    <div class="flex items-center space-x-4 mt-2">
+
+      <!-- Original Submit -->
+      <div class="flex flex-col items-center">
+        <button id="submitBtn" 
+                class="bg-green-500 text-white px-4 py-2 rounded disabled:bg-gray-400 disabled:cursor-not-allowed">
+          Submit
+        </button>
+        <div id="loadingBar" class="w-48 h-3 bg-gray-300 rounded mt-2 hidden relative">
+          <div id="loadingProgress" class="h-3 bg-blue-500 rounded w-0"></div>
+        </div>
+      </div>
+
+      <!-- Enable Submit Button -->
+      <div class="flex flex-col items-center">
+        <button id="enableSubmitBtn" class="bg-yellow-500 text-white px-4 py-2 rounded">Enable Submit</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Circular Loader Demo -->
+  <div>
+    <h3 class="font-bold">Circular Loading Spinner</h3>
+    <div class="flex flex-col items-center mt-2">
+      <div id="circleLoader" class="loader hidden"></div>
+      <button id="startCircleBtn" class="bg-purple-500 text-white px-4 py-2 rounded mt-2">Start Circular Loader</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Fields Overlay Modal -->
+<div id="fieldsOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+  <div class="relative w-2/3 h-2/3 max-w-screen-lg max-h-screen-lg">
+    <!-- Close Button -->
+    <button id="closeOverlayBtn" class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded z-50">X</button>
+    
+    <!-- Iframe for fields.html -->
+    <iframe src="file:///Users/deepakmathpal/Downloads/demo-automation-site/fields.html"
+            class="w-full h-full bg-white rounded shadow-lg border"></iframe>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Delayed element for waitForSelector
+  setTimeout(() => {
+    document.getElementById('delayedElement').style.display = 'block';
+  }, 3000);
+
+  // URL change for waitForURL
+  document.getElementById('changeUrlBtn').addEventListener('click', () => {
+    setTimeout(() => {
+      window.location.hash = "#new-url";
+    }, 2000);
+  });
+
+  // Popup for waitForEvent
+  document.getElementById('popupBtn').addEventListener('click', () => {
+    const popup = window.open("", "popupWindow", "width=400,height=300");
+    popup.document.write("<h2>Popup Window</h2><p>This is a simulated popup.</p>");
+  });
+
+  // Nested iframe content
+  const iframe = document.getElementById('nestedIframe');
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open();
+  doc.write(`
+    <!DOCTYPE html>
+    <html>
+      <body>
+        <input type="text" id="iframeField" placeholder="Iframe Input Field">
+      </body>
+    </html>
+  `);
+  doc.close();
+
+  // Open shadow DOM for wait testing
+  const shadowHost = document.querySelector('#shadowHost');
+  const shadowRoot = shadowHost.attachShadow({mode: 'open'});
+  const shadowInput = document.createElement('input');
+  shadowInput.id = 'shadowInput';
+  shadowInput.placeholder = 'Shadow DOM Input Field';
+  shadowInput.style.padding = '5px';
+  shadowRoot.appendChild(shadowInput);
+
+  // Submit button logic (linear loading)
+  const submitBtn = document.getElementById('submitBtn');
+  const loadingBar = document.getElementById('loadingBar');
+  const loadingProgress = document.getElementById('loadingProgress');
+
+  submitBtn.addEventListener('click', () => {
+    submitBtn.disabled = true;
+    loadingBar.classList.remove('hidden');
+
+    let width = 0;
+    const interval = setInterval(() => {
+      width += 1;
+      loadingProgress.style.width = width + '%';
+      if(width >= 100){
+        clearInterval(interval);
+        loadingBar.classList.add('hidden');
+        submitBtn.disabled = true;
+        alert('Submit finished!');
+      }
+    }, 1200); // ~2 minutes
+  });
+
+  const enableSubmitBtn = document.getElementById('enableSubmitBtn');
+  enableSubmitBtn.addEventListener('click', () => {
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      alert('Submit button enabled!');
+    }, 2000);
+  });
+
+  // Circular loader logic with fields.html overlay
+  const circleLoader = document.getElementById('circleLoader');
+  const startCircleBtn = document.getElementById('startCircleBtn');
+  const fieldsOverlay = document.getElementById('fieldsOverlay');
+  const closeOverlayBtn = document.getElementById('closeOverlayBtn');
+
+  startCircleBtn.addEventListener('click', () => {
+    circleLoader.classList.remove('hidden');
+
+    setTimeout(() => {
+      circleLoader.classList.add('hidden');
+      // Show fields.html overlay
+      fieldsOverlay.classList.remove('hidden');
+    }, 5000); // duration of circular loader
+  });
+
+  // Close button functionality
+  closeOverlayBtn.addEventListener('click', () => {
+    fieldsOverlay.classList.add('hidden');
+  });
+
+});
+
+// Update current URL display
+window.addEventListener('hashchange', () => {
+  document.getElementById('currentUrl').textContent = window.location.hash;
+});
+</script>
+
+</body>
+</html>

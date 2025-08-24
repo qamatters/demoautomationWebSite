@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate File Upload Playground</title>
+<style>
+/* Navbar */
+nav {
+    background-color: #6b46c1;
+    color: white;
+}
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+nav ul li a {
+    display: block;
+    padding: 14px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+nav ul li a:hover {
+    background-color: #553c9a;
+    border-radius: 6px;
+}
+nav ul li a.font-bold { font-weight: bold; }
+
+/* Container */
+.container {
+    max-width: 1000px; margin:40px auto; padding:20px;
+    border:1px solid #ddd; border-radius:8px; box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+h2 { text-align:center; color:#6b46c1; }
+
+button { background-color:#6b46c1; color:white; border:none; padding:10px 20px; cursor:pointer; border-radius:6px; margin-right:5px; }
+button:hover { background-color:#553c9a; }
+
+.info-icon {
+    display:inline-block; background-color:#6b46c1; color:white; border-radius:50%; width:25px; height:25px;
+    text-align:center; line-height:25px; cursor:pointer; margin-left:10px;
+}
+
+/* Dropzone */
+.dropzone {
+    border:2px dashed #6b46c1; border-radius:8px; padding:40px; text-align:center;
+    color:#6b46c1; margin-bottom:20px; transition:background-color 0.3s; cursor:pointer;
+}
+.dropzone.dragover { background-color:#ede9fe; }
+
+/* Table */
+table { width:100%; border-collapse: collapse; margin-top:10px; }
+table, th, td { border:1px solid #ddd; }
+th, td { padding:8px; text-align:left; }
+th { background-color:#6b46c1; color:white; cursor:pointer; }
+#uploadedFilesTable img { max-width:50px; max-height:50px; border-radius:4px; }
+
+/* Progress */
+.progress-container { width:100%; background-color:#eee; border-radius:5px; overflow:hidden; height:10px; }
+.progress-bar { height:10px; width:0%; background-color:#6b46c1; border-radius:5px; transition:width 0.3s; }
+
+/* Total info */
+.total-size { margin-top:10px; font-weight:bold; color:#333; }
+
+/* Modal */
+.modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.5); }
+.modal-content { background-color:#fefefe; margin:10% auto; padding:20px; border-radius:8px; max-width:800px; }
+.close { color:#aaa; float:right; font-size:24px; font-weight:bold; cursor:pointer; }
+.close:hover { color:black; }
+
+/* Rename input */
+.rename-input { width:90%; padding:3px; font-size:14px; }
+
+/* Row highlight */
+.uploaded { animation: highlight 0.5s; }
+@keyframes highlight { 0% { background-color:#c7f0d4;} 100% { background-color:white; } }
+
+/* Filter buttons */
+.filter-btn { margin-right:5px; padding:5px 10px; border:none; border-radius:4px; cursor:pointer; }
+.filter-btn.active { background-color:#6b46c1; color:white; }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../demo-form.html">Demo Form</a></li>
+    <li><a href="../records.html">Records</a></li>
+    <li><a href="../fields.html" class="font-bold">Fields</a></li>
+    <li><a href="../order.html">Order Creation</a></li>
+  </ul>
+</nav>
+
+
+<div class="container">
+<h2>Ultimate File Upload Playground <span class="info-icon" id="infoIcon">i</span></h2>
+
+<div class="dropzone" id="dropzone">Drag & Drop files here or <button onclick="fileInput.click()">Select Files</button></div>
+<input type="file" id="fileInput" multiple>
+
+<div style="margin-bottom:10px;">
+Filter:
+<button class="filter-btn active" onclick="filterFiles('all')">All</button>
+<button class="filter-btn" onclick="filterFiles('image')">Images</button>
+<button class="filter-btn" onclick="filterFiles('file')">Other Files</button>
+</div>
+
+<div style="margin-bottom:10px;">
+Global Progress: <div class="progress-container"><div class="progress-bar" id="globalProgress"></div></div>
+</div>
+
+<table id="uploadedFilesTable">
+<thead>
+<tr>
+<th onclick="sortTable(1)">Name ⬍</th>
+<th onclick="sortTable(2)">Size ⬍</th>
+<th onclick="sortTable(3)">Type ⬍</th>
+<th>Progress</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+<div class="total-size" id="totalSize">Total Uploaded Size: 0 KB | Total Files: 0</div>
+</div>
+
+<!-- Modal -->
+<div id="scenarioModal" class="modal">
+<div class="modal-content">
+<span class="close" id="closeModal">&times;</span>
+<h3>File Upload Test Scenarios</h3>
+<table>
+<thead><tr><th>Category</th><th>Scenario</th><th>Expected Result</th></tr></thead>
+<tbody>
+<tr><td>Basic</td><td>Upload single valid file</td><td>Success</td></tr>
+<tr><td>Basic</td><td>Upload multiple files</td><td>Success</td></tr>
+<tr><td>File Type</td><td>Allowed / disallowed types</td><td>Success / Error</td></tr>
+<tr><td>Size</td><td>Exceed limit</td><td>Error</td></tr>
+<tr><td>Drag & Drop</td><td>Drag files</td><td>Success</td></tr>
+<tr><td>Retry</td><td>Simulate failed upload</td><td>Retry works</td></tr>
+<tr><td>Persistence</td><td>Refresh page</td><td>Files retained</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<script>
+const modal = document.getElementById("scenarioModal");
+document.getElementById("infoIcon").onclick = () => modal.style.display="block";
+document.getElementById("closeModal").onclick = () => modal.style.display="none";
+window.onclick = e => { if(e.target==modal) modal.style.display="none"; }
+
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const tableBody = document.querySelector("#uploadedFilesTable tbody");
+const totalSizeEl = document.getElementById("totalSize");
+const globalBar = document.getElementById("globalProgress");
+
+let filesData = JSON.parse(localStorage.getItem("uploadedFiles")||"[]");
+let totalSize=0, totalFiles=0, globalProgress=0;
+
+// Render persisted files
+filesData.forEach(f => renderFile(f, false));
+updateTotals();
+
+// Drag & Drop events
+dropzone.addEventListener("dragover", e => { e.preventDefault(); dropzone.classList.add("dragover"); });
+dropzone.addEventListener("dragleave", e => { e.preventDefault(); dropzone.classList.remove("dragover"); });
+dropzone.addEventListener("drop", e => { e.preventDefault(); dropzone.classList.remove("dragover"); handleFiles(Array.from(e.dataTransfer.files)); });
+fileInput.addEventListener("change", e => handleFiles(Array.from(e.target.files)));
+
+function handleFiles(files){
+    files.forEach(file=>{
+        if(file.size > 5*1024*1024){ alert(file.name+" is too large (>5MB)"); return; }
+        const f = {name:file.name, type:file.type||"N/A", size:(file.size/1024).toFixed(2)};
+        filesData.push(f);
+        localStorage.setItem("uploadedFiles", JSON.stringify(filesData));
+        renderFile(f,true,file);
+    });
+}
+
+function renderFile(f, animate=true, fileObj=null){
+    totalSize+=parseFloat(f.size); totalFiles++;
+    const row=document.createElement("tr");
+    if(animate) row.classList.add("uploaded");
+
+    let preview='';
+    if(f.type.startsWith("image/") && fileObj){
+        const img=document.createElement("img"); img.classList.add("preview");
+        const reader = new FileReader(); reader.onload=e=> img.src=e.target.result; reader.readAsDataURL(fileObj);
+        const td=document.createElement("td"); td.appendChild(img); preview=td.outerHTML;
+    } else preview="<td>📄</td>";
+
+    const renameInput=`<input class='rename-input' value='${f.name}'>`;
+    const progressHTML=`<td><div class="progress-container"><div class="progress-bar"></div></div></td>`;
+    const actionsHTML=`<td>
+        <button onclick="removeFile(this,${f.size})">Remove</button>
+        <button onclick="retryUpload(this)">Retry</button>
+        <button onclick="downloadFile(this)">Download</button>
+    </td>`;
+
+    row.innerHTML=`${preview}<td>${renameInput}</td><td>${f.size}</td><td>${f.type}</td>${progressHTML}${actionsHTML}`;
+    tableBody.appendChild(row);
+
+    if(animate){
+        const bar=row.querySelector(".progress-bar");
+        simulateUpload(bar);
+    }
+
+    updateTotals();
+}
+
+// Simulate upload
+function simulateUpload(bar){
+    let width=0;
+    const failChance=Math.random()<0.2;
+    const interval=setInterval(()=>{
+        width+=10; bar.style.width=width+"%";
+        globalProgress=Math.min(globalProgress+2,100); globalBar.style.width=globalProgress+"%";
+        if(width>=100){
+            clearInterval(interval);
+            if(failChance){ bar.style.backgroundColor="red"; alert("Some files failed. Retry available."); }
+        }
+    },100);
+}
+
+// Remove, Retry, Download
+function removeFile(button,size){
+    const row=button.closest("tr"); row.remove();
+    totalSize-=size; totalFiles--;
+    updateTotals();
+}
+function retryUpload(button){
+    const row=button.closest("tr");
+    const bar=row.querySelector(".progress-bar"); bar.style.width="0%"; bar.style.backgroundColor="#6b46c1";
+    simulateUpload(bar);
+}
+function downloadFile(button){
+    const row=button.closest("tr"); const input=row.querySelector(".rename-input");
+    alert("Download simulated for "+input.value);
+}
+
+// Update totals
+function updateTotals(){ totalSizeEl.innerText=`Total Uploaded Size: ${totalSize.toFixed(2)} KB | Total Files: ${totalFiles}`; }
+
+// Filter & Sorting
+function filterFiles(type){
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+    event.target.classList.add("active");
+    document.querySelectorAll("#uploadedFilesTable tbody tr").forEach(row=>{
+        const fileType=row.cells[3].innerText;
+        if(type=="all") row.style.display="";
+        else if(type=="image") row.style.display=fileType.startsWith("image/")?"":"none";
+        else row.style.display=fileType.startsWith("image/")?"none":"";
+    });
+}
+function sortTable(col){
+    const table=document.getElementById("uploadedFilesTable"); let switching=true;
+    while(switching){
+        switching=false;
+        const rows=table.rows;
+        for(let i=1;i<rows.length-1;i++){
+            let shouldSwitch=false;
+            let x=rows[i].cells[col].innerText.toLowerCase();
+            let y=rows[i+1].cells[col].innerText.toLowerCase();
+            if(col==1 || col==2) { x=parseFloat(x); y=parseFloat(y); }
+            if(x>y){ shouldSwitch=true; break; }
+        }
+        if(shouldSwitch){ rows[i].parentNode.insertBefore(rows[i+1],rows[i]); switching=true; }
+    }
+}
+</script>
+</body>
+</html>

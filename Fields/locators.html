@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Locator Playground</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<style>
+  .shadow-host { padding: 20px; background-color: #f0f0f0; margin: 10px 0; border: 1px solid #ccc; }
+  .closed-shadow-host { padding: 20px; background-color: #e0f7fa; margin: 10px 0; border: 1px solid #009688; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // JS-triggered button
+  document.getElementById('jsButton').addEventListener('click', () => {
+    alert("This button is triggered via JavaScript only!");
+  });
+
+  // Nested iframe
+  const iframe = document.getElementById('nestedIframe');
+  iframe.onload = () => {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.body.innerHTML = '<input type="text" id="iframeField" placeholder="Nested Iframe Field">';
+  };
+
+  // Shadow DOM - Open
+  const shadowHost = document.querySelector('#openShadowHost');
+  const shadowRoot = shadowHost.attachShadow({mode: 'open'});
+  const shadowInput = document.createElement('input');
+  shadowInput.id = 'openShadowInput';
+  shadowInput.placeholder = 'Open Shadow DOM Field';
+  shadowInput.style.padding = '5px';
+  shadowRoot.appendChild(shadowInput);
+
+  // Shadow DOM - Closed
+  const closedShadowHost = document.querySelector('#closedShadowHost');
+  const closedShadowRoot = closedShadowHost.attachShadow({mode: 'closed'});
+  const closedInput = document.createElement('input');
+  closedInput.id = 'closedShadowInput';
+  closedInput.placeholder = 'Closed Shadow DOM Field';
+  closedInput.style.padding = '5px';
+  closedShadowRoot.appendChild(closedInput);
+
+});
+</script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6 space-y-6">
+
+  <h2 class="text-3xl font-bold text-center mb-4">Locator Playground</h2>
+
+  <!-- Role-based elements -->
+  <h3 class="font-bold">Role-based elements</h3>
+  <button role="button" id="roleButton" class="bg-indigo-500 text-white px-4 py-2 rounded">Role Button</button>
+  <input type="checkbox" role="checkbox" id="roleCheckbox"> Checkbox Role
+  <input type="radio" role="radio" name="roleRadioGroup" id="roleRadio"> Radio Role
+
+  <!-- Text / Alt / Title / Placeholder / TestId -->
+  <h3 class="font-bold">Other locators</h3>
+  <button id="textButton" class="bg-blue-500 text-white px-4 py-2 rounded">Click Me (getByText)</button>
+  <img src="../public/sample.jpg" alt="Placeholder Image" id="altImage" class="my-2 w-32 h-32 object-cover">
+  <input type="text" id="placeholderInput" placeholder="Placeholder Text Field" class="border p-2 rounded w-full">
+  <div title="Tooltip Title" id="titleDiv" class="border p-2 rounded w-full my-2">Hover Me (getByTitle)</div>
+  <div data-testid="test-id-example" class="border p-2 rounded w-full my-2">Test ID Field</div>
+
+  <!-- JS-triggered button -->
+  <button id="jsButton" class="bg-red-500 text-white px-4 py-2 rounded">JS Trigger Button</button>
+
+  <!-- Nested iframe -->
+<h3 class="font-bold">Nested Iframe Field</h3>
+<iframe id="nestedIframe" class="w-full h-32 border rounded mb-4"></iframe>
+
+<script>
+const iframe = document.getElementById('nestedIframe');
+const doc = iframe.contentDocument || iframe.contentWindow.document;
+doc.open();
+doc.write(`
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        body { margin:10px; font-family: sans-serif; }
+        input { padding: 5px; width: 90%; }
+      </style>
+    </head>
+    <body>
+      <input type="text" id="iframeField" placeholder="Nested Iframe Field">
+    </body>
+  </html>
+`);
+doc.close();
+</script>
+
+
+  <!-- Shadow DOM -->
+  <h3 class="font-bold">Open Shadow DOM</h3>
+  <div id="openShadowHost" class="shadow-host"></div>
+
+  <h3 class="font-bold">Closed Shadow DOM</h3>
+  <div id="closedShadowHost" class="closed-shadow-host"></div>
+
+  <!-- Label-based input -->
+  <h3 class="font-bold">Label-based input</h3>
+  <label for="labelInput">Name (getByLabel)</label>
+  <input type="text" id="labelInput" class="border p-2 rounded w-full">
+
+  <!-- Normal input -->
+  <h3 class="font-bold">Normal input</h3>
+  <input type="text" id="normalInput" placeholder="Normal Input Field" class="border p-2 rounded w-full">
+
+</div>
+
+</body>
+</html>

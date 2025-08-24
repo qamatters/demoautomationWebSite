@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TextArea Playground</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+      <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+      <li><a href="../demo-form.html" class="hover:bg-purple-900 px-3 py-2 rounded">Demo Form</a></li>
+      <li><a href="../records.html" class="hover:bg-purple-900 px-3 py-2 rounded">Records</a></li>
+      <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+      <li><a href="../order.html" class="hover:bg-purple-900 px-3 py-2 rounded">Order Creation</a></li>
+    </ul>
+  </nav>
+
+  <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded shadow space-y-4">
+    <h1 class="text-2xl font-bold mb-4">TextArea Automation Playground</h1>
+
+    <!-- Normal TextArea -->
+    <textarea class="w-full border rounded p-2" rows="4" placeholder="Enter your text here..." id="normalTextarea"></textarea>
+
+    <!-- TextArea with maxlength -->
+    <textarea class="w-full border rounded p-2" rows="4" maxlength="50" placeholder="Max 50 characters" id="maxLengthTextarea"></textarea>
+
+    <!-- Disabled TextArea -->
+    <textarea class="w-full border rounded p-2 bg-gray-200 cursor-not-allowed" rows="4" disabled id="disabledTextarea">Disabled content</textarea>
+
+    <!-- TextArea with default value -->
+    <textarea class="w-full border rounded p-2" rows="4" id="defaultValueTextarea">Default text content</textarea>
+  </div>
+
+</body>
+</html>

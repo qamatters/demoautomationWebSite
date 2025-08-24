@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Loan Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-purple-600 text-white p-4 flex justify-between items-center shadow-lg">
+  <h1 class="text-xl font-bold">Automation Playground</h1>
+  <div class="space-x-6">
+    <a href="dashboard.html" class="hover:text-gray-200">Dashboard</a>
+    <a href="loan.html" class="hover:text-gray-200 underline font-semibold">Loans</a>
+    <a href="payees.html" class="hover:text-gray-200 underline font-semibold">Payees</a>ß
+  </div>
+</nav>
+
+<!-- Loan Card Container -->
+<div class="max-w-3xl mx-auto mt-8 bg-white p-6 rounded-2xl shadow-lg">
+
+  <h2 class="text-2xl font-semibold text-gray-700 mb-4 text-center">Loan Details</h2>
+
+  <!-- Dropdown -->
+  <label for="loanSelect" class="block text-lg font-medium mb-2">Select Existing Loan:</label>
+  <select id="loanSelect" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4">
+    <option value="">--Select Loan--</option>
+    <option value="car">Car Loan</option>
+    <option value="home">Home Loan</option>
+    <option value="personal">Personal Loan</option>
+  </select>
+
+  <!-- Loan Card -->
+  <div id="loanCard" class="hidden bg-gray-50 p-4 rounded-xl border border-gray-200 shadow">
+    <table class="w-full text-left mb-4">
+      <tr><th class="py-1">Loan Type:</th><td id="loanType"></td></tr>
+      <tr><th class="py-1">Loan Amount:</th><td>$<span id="loanAmount"></span></td></tr>
+      <tr><th class="py-1">Interest Rate:</th><td><span id="loanInterest"></span>%</td></tr>
+      <tr><th class="py-1">Tenure:</th><td><span id="loanTenure"></span> months</td></tr>
+      <tr><th class="py-1">Remaining Amount:</th><td>$<span id="loanRemaining"></span></td></tr>
+    </table>
+
+    <div class="mt-4">
+      <canvas id="loanChart" class="w-full h-48"></canvas>
+    </div>
+
+    <button id="payEmiBtn" class="mt-4 w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300">Pay EMI</button>
+    <button id="downloadBtn" class="mt-2 w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-300">Download Loan Details (CSV)</button>
+  </div>
+</div>
+
+<script>
+  // ===== Loan Data =====
+  const loans = {
+    car: { type: 'Car Loan', amount: 15000, interest: 7.5, tenure: 36, remaining: 7000, emi: 320 },
+    home: { type: 'Home Loan', amount: 120000, interest: 6.8, tenure: 240, remaining: 75000, emi: 980 },
+    personal: { type: 'Personal Loan', amount: 8000, interest: 12, tenure: 24, remaining: 4500, emi: 400 }
+  };
+
+  const loanSelect = document.getElementById('loanSelect');
+  const loanCard = document.getElementById('loanCard');
+  let paidAmount;
+
+  // ===== Loan Doughnut Chart (created once) =====
+  const ctxLoan = document.getElementById('loanChart').getContext('2d');
+  let loanChart = new Chart(ctxLoan, {
+    type: 'doughnut',
+    data: {
+      labels: ['Paid', 'Remaining'],
+      datasets: [{
+        data: [0, 0],
+        backgroundColor: ['#4CAF50', '#F44336'],
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { animateRotate: true, duration: 1000 },
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+
+  // ===== Update chart & info on loan selection =====
+  loanSelect.addEventListener('change', () => {
+    const selected = loanSelect.value;
+    if (!loans[selected]) { loanCard.classList.add('hidden'); return; }
+
+    const loan = loans[selected];
+    paidAmount = loan.amount - loan.remaining;
+
+    document.getElementById('loanType').textContent = loan.type;
+    document.getElementById('loanAmount').textContent = loan.amount;
+    document.getElementById('loanInterest').textContent = loan.interest;
+    document.getElementById('loanTenure').textContent = loan.tenure;
+    document.getElementById('loanRemaining').textContent = loan.remaining;
+
+    loanCard.classList.remove('hidden');
+
+    // Update doughnut chart
+    loanChart.data.datasets[0].data = [paidAmount, loan.remaining];
+    loanChart.update();
+  });
+
+  // ===== Pay EMI with smooth animation =====
+  document.getElementById('payEmiBtn').addEventListener('click', () => {
+    const selected = loanSelect.value;
+    if (!loans[selected]) return;
+
+    const loan = loans[selected];
+    if (loan.remaining <= 0) return alert('Loan fully paid!');
+
+    loan.remaining -= loan.emi;
+    if (loan.remaining < 0) loan.remaining = 0;
+    paidAmount = loan.amount - loan.remaining;
+
+    document.getElementById('loanRemaining').textContent = loan.remaining;
+
+    loanChart.data.datasets[0].data = [paidAmount, loan.remaining];
+    loanChart.update();
+  });
+
+  // ===== Download CSV =====
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const loanType = document.getElementById('loanType').textContent;
+    const amount = document.getElementById('loanAmount').textContent;
+    const interest = document.getElementById('loanInterest').textContent;
+    const tenure = document.getElementById('loanTenure').textContent;
+    const remaining = document.getElementById('loanRemaining').textContent;
+
+    const csv = `Loan Type,Loan Amount,Interest Rate,Tenure (months),Remaining Amount\n${loanType},${amount},${interest},${tenure},${remaining}`;
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${loanType.replace(' ','_')}_Details.csv`;
+    link.click();
+  });
+</script>
+
+</body>
+</html>

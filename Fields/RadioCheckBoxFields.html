@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation Form Playground</title>
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+/* Navbar */
+nav {
+    background-color: #6b46c1;
+    color: white;
+}
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+nav ul li a {
+    display: block;
+    padding: 14px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+nav ul li a:hover {
+    background-color: #553c9a;
+    border-radius: 6px;
+}
+nav ul li a.font-bold { font-weight: bold; }
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #6b46c1;
+    padding: 0 10px;
+}
+
+label {
+    margin-right: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+label.child-checkbox {
+    display: block;
+    margin-left: 20px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+input[type="radio"]:not(:disabled):hover,
+input[type="checkbox"]:not(:disabled):hover {
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+label.disabled-label {
+    color: #999;
+}
+
+input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+input[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #dff0d8;
+    background-color: #dff0d8;
+    color: #3c763d;
+    border-radius: 8px;
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../demo-form.html">Demo Form</a></li>
+    <li><a href="../records.html">Records</a></li>
+    <li><a href="../fields.html" class="font-bold">Fields</a></li>
+    <li><a href="../order.html">Order Creation</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+<h2>Form Automation Scenarios</h2>
+<form id="automationForm">
+
+<!-- Radio Group: Default Selected -->
+<fieldset>
+<legend>Favorite OS (Default Selected)</legend>
+<label><input type="radio" name="os1" value="Windows" checked> Windows</label>
+<label><input type="radio" name="os1" value="macOS"> macOS</label>
+<label><input type="radio" name="os1" value="Linux"> Linux</label>
+<label class="disabled-label"><input type="radio" name="os1" value="Disabled" disabled> Disabled Option</label>
+</fieldset>
+
+<!-- Radio Group: No Default -->
+<fieldset>
+<legend>Preferred Browser (No Default)</legend>
+<label><input type="radio" name="browser" value="Chrome"> Chrome</label>
+<label><input type="radio" name="browser" value="Firefox"> Firefox</label>
+<label><input type="radio" name="browser" value="Edge"> Edge</label>
+</fieldset>
+
+<!-- Radio Group: All Disabled -->
+<fieldset>
+<legend>Disabled Radio Group</legend>
+<label class="disabled-label"><input type="radio" name="disabledGroup" value="Option1" disabled> Option 1</label>
+<label class="disabled-label"><input type="radio" name="disabledGroup" value="Option2" disabled> Option 2</label>
+</fieldset>
+
+<!-- Checkbox Group: Master + Nested -->
+<fieldset>
+<legend>Automation Tools (Select All / Nested)</legend>
+<p>
+<label><input type="checkbox" id="masterTools"> Select All</label>
+</p>
+<p>
+<label><input type="checkbox" name="tools" value="Selenium"> Selenium</label>
+<label><input type="checkbox" name="tools" value="Playwright"> Playwright</label>
+<label><input type="checkbox" name="tools" value="Cypress"> Cypress</label>
+<label class="disabled-label"><input type="checkbox" name="tools" value="Disabled" disabled> Disabled Tool</label>
+<label><input type="checkbox" name="tools" value="Robot" checked> Robot Framework</label>
+<label class="child-checkbox"><input type="checkbox" name="tools" value="RobotChild1"> Robot Child 1</label>
+<label class="child-checkbox"><input type="checkbox" name="tools" value="RobotChild2"> Robot Child 2</label>
+</p>
+</fieldset>
+
+<!-- Conditional Checkbox -->
+<fieldset>
+<legend>Enable Conditional Features</legend>
+<label><input type="radio" name="enableFeatures" value="yes"> Enable Features</label>
+<label><input type="radio" name="enableFeatures" value="no" checked> Disable Features</label>
+<div id="conditionalCheckboxes" style="margin-top:10px; display:none;">
+<label><input type="checkbox" name="feature1"> Feature 1</label>
+<label><input type="checkbox" name="feature2"> Feature 2</label>
+</div>
+</fieldset>
+
+<input type="submit" value="Submit Form">
+</form>
+
+<div id="result-box" class="result"></div>
+</div>
+
+<script>
+// Master checkbox logic
+const master = document.getElementById('masterTools');
+const tools = document.querySelectorAll('input[name="tools"]:not([disabled])');
+master.addEventListener('change', e => {
+    tools.forEach(cb => cb.checked = master.checked);
+});
+tools.forEach(cb => cb.addEventListener('change', () => {
+    const allChecked = Array.from(tools).every(c => c.checked);
+    const someChecked = Array.from(tools).some(c => c.checked);
+    if(allChecked) { master.checked = true; master.indeterminate=false; }
+    else if(someChecked) { master.checked=false; master.indeterminate=true; }
+    else { master.checked=false; master.indeterminate=false; }
+}));
+
+// Conditional checkbox display
+const enableRadios = document.querySelectorAll('input[name="enableFeatures"]');
+const conditionalDiv = document.getElementById('conditionalCheckboxes');
+enableRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        conditionalDiv.style.display = (radio.value==='yes') ? 'block' : 'none';
+    });
+});
+
+// Form submission
+document.getElementById('automationForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const resultBox = document.getElementById('result-box');
+    
+    const radioGroups = ['os1','browser','disabledGroup','enableFeatures'];
+    const radiosResult = radioGroups.map(g=>{
+        const sel = document.querySelector(`input[name="${g}"]:checked`);
+        return `${g}: ${sel ? sel.value : 'None'}`;
+    }).join('<br>');
+
+    const checkedTools = Array.from(document.querySelectorAll('input[name="tools"]:checked')).map(c=>c.value);
+    const conditionalTools = Array.from(document.querySelectorAll('#conditionalCheckboxes input[type="checkbox"]:checked')).map(c=>c.value);
+    
+    resultBox.innerHTML = `<h3>Form Submission Results</h3>
+    <p>${radiosResult}</p>
+    <p>Tools Selected: ${checkedTools.join(', ') || 'None'}</p>
+    <p>Conditional Features: ${conditionalTools.join(', ') || 'None'}</p>`;
+    resultBox.style.display = 'block';
+});
+</script>
+
+</body>
+</html>

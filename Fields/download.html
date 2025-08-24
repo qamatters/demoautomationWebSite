@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro File Download Playground</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 0;}
+  .container { max-width: 1000px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
+  h1 { text-align: center; color: #4B0082; }
+
+  /* Navbar */
+  nav { background-color: #6b46c1; color: white; margin-bottom: 20px; border-radius: 6px; }
+  nav ul { display: flex; list-style: none; padding: 0; margin: 0; }
+  nav ul li a { display: block; padding: 14px 20px; color: white; text-decoration: none; font-weight: 500; }
+  nav ul li a:hover { background-color: #553c9a; border-radius: 6px; }
+  nav ul li a.font-bold { font-weight: bold; }
+
+  /* Upload Section */
+  .upload-section { border: 2px dashed #4B0082; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px; cursor: pointer; }
+  .upload-section.dragover { background: #f0e6ff; }
+  input[type=file] { display: none; }
+
+  /* File Table */
+  .file-list { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+  .file-list th, .file-list td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+  .file-list th { background: #4B0082; color: white; }
+  .btn { padding: 6px 12px; background: #4B0082; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  .btn:hover { background: #6a1cb8; }
+
+  .progress-container { width: 100%; background: #ddd; border-radius: 4px; margin: 10px 0; display: none; }
+  .progress-bar { height: 20px; width: 0%; background: #4B0082; border-radius: 4px; text-align: center; color: white; font-size: 12px; }
+
+  .preview { max-width: 50px; max-height: 50px; }
+  .search-box { margin-bottom: 10px; padding: 6px; width: 200px; border-radius: 4px; border: 1px solid #ccc; }
+
+  /* Info Icon */
+  .info-icon { float: right; cursor: pointer; font-size: 18px; margin-top: -40px; margin-right: 10px; }
+  .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);}
+  .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 8px; width: 400px; }
+  .close { float: right; cursor: pointer; font-size: 20px; }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../demo-form.html">Demo Form</a></li>
+    <li><a href="../records.html">Records</a></li>
+    <li><a href="../fields.html" class="font-bold">Fields</a></li>
+    <li><a href="../order.html">Order Creation</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <h1>Pro File Download Playground 
+    <span class="info-icon" id="infoIcon">ℹ️</span>
+  </h1>
+
+  <div class="upload-section" id="uploadSection">
+    <p>Drag & Drop Files Here or Click to Browse</p>
+    <input type="file" id="fileInput" multiple>
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+
+  <input type="text" id="searchInput" class="search-box" placeholder="Search files...">
+
+  <table class="file-list" id="fileTable">
+    <thead>
+      <tr>
+        <th>Preview</th>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Type</th>
+        <th>Date Uploaded</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <button class="btn" id="downloadAllBtn">Download All</button>
+</div>
+
+<!-- Info Modal -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h3>All Scenarios Covered:</h3>
+    <ul>
+      <li>Drag & Drop + Browse Upload</li>
+      <li>File Size & Type Validation</li>
+      <li>Upload Progress Bar</li>
+      <li>Preview Images/PDF</li>
+      <li>Search & Filter Files</li>
+      <li>Individual Download</li>
+      <li>Download All</li>
+      <li>Alerts/Notifications</li>
+      <li>Responsive Design</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+let uploadedFiles = [];
+const uploadSection = document.getElementById('uploadSection');
+const fileInput = document.getElementById('fileInput');
+const fileTableBody = document.querySelector('#fileTable tbody');
+const searchInput = document.getElementById('searchInput');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const progressContainer = document.querySelector('.progress-container');
+const progressBar = document.getElementById('progressBar');
+
+// Info Modal
+const infoIcon = document.getElementById('infoIcon');
+const infoModal = document.getElementById('infoModal');
+const closeModal = document.getElementById('closeModal');
+infoIcon.onclick = () => infoModal.style.display = 'block';
+closeModal.onclick = () => infoModal.style.display = 'none';
+window.onclick = (e) => { if(e.target==infoModal) infoModal.style.display='none'; }
+
+// Drag & Drop
+uploadSection.addEventListener('dragover', e => { e.preventDefault(); uploadSection.classList.add('dragover'); });
+uploadSection.addEventListener('dragleave', e => { e.preventDefault(); uploadSection.classList.remove('dragover'); });
+uploadSection.addEventListener('drop', e => {
+    e.preventDefault(); uploadSection.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+});
+uploadSection.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+// Handle Files
+function handleFiles(files) {
+    let total = files.length, count = 0;
+    progressContainer.style.display = 'block';
+    progressBar.style.width = '0%';
+    for (let file of files) {
+        if (file.size > 5*1024*1024) { alert(`File ${file.name} exceeds 5MB!`); continue; }
+        const allowedTypes = ['text/plain','application/pdf','image/png','image/jpeg','application/zip'];
+        if (!allowedTypes.includes(file.type)) { alert(`File type ${file.type} not allowed!`); continue; }
+
+        const fileData = { name:file.name, size:(file.size/1024).toFixed(2)+' KB', type:file.type.split('/')[1], date:new Date().toLocaleString(), file:file };
+        uploadedFiles.push(fileData);
+        addFileRow(fileData);
+
+        count++;
+        progressBar.style.width = Math.round((count/total)*100)+'%';
+    }
+    setTimeout(()=>progressContainer.style.display='none',500);
+}
+
+// Add File Row
+function addFileRow(fileData) {
+    const tr = document.createElement('tr');
+    const previewCell = document.createElement('td');
+    if(fileData.type==='png'||fileData.type==='jpeg'){
+        const img=document.createElement('img');
+        img.src=URL.createObjectURL(fileData.file); img.className='preview'; previewCell.appendChild(img);
+    } else if(fileData.type==='pdf'){ previewCell.textContent='📄'; }
+    else{ previewCell.textContent='📁'; }
+
+    tr.innerHTML=`
+        <td></td>
+        <td>${fileData.name}</td>
+        <td>${fileData.size}</td>
+        <td>${fileData.type}</td>
+        <td>${fileData.date}</td>
+        <td><button class="btn">Download</button></td>
+    `;
+    tr.cells[0].appendChild(previewCell.firstChild||previewCell);
+
+    tr.querySelector('button').addEventListener('click', ()=>{
+        const url=URL.createObjectURL(fileData.file);
+        const a=document.createElement('a'); a.href=url; a.download=fileData.name;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        alert(`Downloaded ${fileData.name}`);
+    });
+
+    fileTableBody.appendChild(tr);
+}
+
+// Search
+searchInput.addEventListener('input', ()=>{
+    const query=searchInput.value.toLowerCase();
+    Array.from(fileTableBody.rows).forEach(row=>{
+        row.style.display = row.cells[1].textContent.toLowerCase().includes(query)?'':'none';
+    });
+});
+
+// Download All
+downloadAllBtn.addEventListener('click', ()=>{
+    if(!uploadedFiles.length){ alert('No files to download'); return; }
+    alert('Simulated Download All as ZIP!');
+});
+</script>
+
+</body>
+</html>

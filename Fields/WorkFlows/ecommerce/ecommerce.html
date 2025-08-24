@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Workflow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <nav class="bg-purple-600 text-white p-4 mb-6">
+    <ul class="flex gap-6">
+      <li><a href="index.html" class="hover:underline">Home</a></li>
+      <li><a href="ecommerce.html" class="underline">E-Commerce</a></li>
+      <li><a href="travel.html" class="hover:underline">Travel</a></li>
+      <li><a href="insurance.html" class="hover:underline">Insurance</a></li>
+    </ul>
+  </nav>
+
+  <!-- Login / Registration -->
+  <div class="bg-white p-6 rounded shadow mb-6">
+    <h2 class="text-xl font-bold mb-4">Login / Register</h2>
+    <div class="flex gap-4">
+      <input type="text" placeholder="Username" id="username" class="border p-2 rounded flex-1">
+      <input type="password" placeholder="Password" id="password" class="border p-2 rounded flex-1">
+      <button class="bg-green-500 text-white px-4 py-2 rounded" onclick="alert('Login simulated')">Login</button>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="alert('Register simulated')">Register</button>
+    </div>
+  </div>
+
+  <!-- Product Catalog -->
+  <div class="bg-white p-6 rounded shadow mb-6">
+    <h2 class="text-xl font-bold mb-4">Product Catalog</h2>
+    <table class="min-w-full border border-gray-200 text-left">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="p-2 border">Product</th>
+          <th class="p-2 border">Price</th>
+          <th class="p-2 border">Stock</th>
+          <th class="p-2 border">Action</th>
+        </tr>
+      </thead>
+      <tbody id="product-table">
+        <!-- Dummy Data -->
+        <tr>
+          <td class="p-2 border">Laptop</td>
+          <td class="p-2 border">$1200</td>
+          <td class="p-2 border">5</td>
+          <td class="p-2 border">
+            <button class="bg-green-400 px-2 py-1 rounded" onclick="addToCart('Laptop')">Add to Cart</button>
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Headphones</td>
+          <td class="p-2 border">$200</td>
+          <td class="p-2 border">10</td>
+          <td class="p-2 border">
+            <button class="bg-green-400 px-2 py-1 rounded" onclick="addToCart('Headphones')">Add to Cart</button>
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Smartphone</td>
+          <td class="p-2 border">$800</td>
+          <td class="p-2 border">0</td>
+          <td class="p-2 border">
+            <button class="bg-gray-400 px-2 py-1 rounded cursor-not-allowed" disabled>Out of Stock</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cart -->
+  <div class="bg-white p-6 rounded shadow mb-6">
+    <h2 class="text-xl font-bold mb-4">Cart</h2>
+    <ul id="cart-list" class="mb-4"></ul>
+    <button id="checkout-btn" class="bg-blue-500 text-white px-4 py-2 rounded" onclick="checkout()" disabled>Checkout</button>
+  </div>
+
+  <!-- JS for interaction -->
+  <script>
+    let cart = [];
+    function addToCart(item) {
+      cart.push(item);
+      document.getElementById('cart-list').innerHTML = cart.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('checkout-btn').disabled = false;
+    }
+    function checkout() {
+      alert('Checkout simulated. Order placed!');
+      cart = [];
+      document.getElementById('cart-list').innerHTML = '';
+      document.getElementById('checkout-btn').disabled = true;
+    }
+  </script>
+</body>
+</html>

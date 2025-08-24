@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Automation Playground</title>
+  <style>
+body {
+/* Navbar */
+nav {
+    background-color: #6b46c1;
+    color: white;
+}
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+nav ul li a {
+    display: block;
+    padding: 14px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+nav ul li a:hover {
+    background-color: #553c9a;
+    border-radius: 6px;
+}
+nav ul li a.font-bold { font-weight: bold; }
+}
+</style>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+
+  <!-- Navbar -->
+<nav>
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../demo-form.html">Demo Form</a></li>
+    <li><a href="../records.html">Records</a></li>
+    <li><a href="../fields.html" class="font-bold">Fields</a></li>
+    <li><a href="../order.html">Order Creation</a></li>
+  </ul>
+</nav>
+
+  <h1 class="text-3xl font-bold mb-8">Dropdown Automation Playgroundo</h1>
+
+  <!-- 1. Basic Dropdown -->
+  <div class="mb-6">
+    <label for="basicDropdown" class="block font-medium mb-2">Basic Dropdown</label>
+    <select id="basicDropdown" class="border border-gray-300 p-2 rounded w-64 bg-white">
+      <option value="">Select an option</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+  </div>
+
+  <!-- 2. Multi-Select Dropdown -->
+  <div class="mb-6">
+    <label for="multiSelectDropdown" class="block font-medium mb-2">Multi-Select Dropdown</label>
+    <select id="multiSelectDropdown" multiple class="border border-gray-300 p-2 rounded w-64 h-32 bg-white">
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+      <option value="cherry">Cherry</option>
+      <option value="date">Date</option>
+    </select>
+  </div>
+
+  <!-- 3. Disabled Dropdown -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Disabled Dropdown</label>
+    <select disabled class="border border-gray-300 p-2 rounded w-64 bg-gray-200 cursor-not-allowed">
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+    </select>
+  </div>
+
+  <!-- 4. Dropdown with Disabled Option -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Dropdown with Disabled Option</label>
+    <select class="border border-gray-300 p-2 rounded w-64 bg-white">
+      <option value="1">Option 1</option>
+      <option value="2" disabled>Option 2 (Disabled)</option>
+      <option value="3">Option 3</option>
+    </select>
+  </div>
+
+  <!-- 5. Grouped Dropdown -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Grouped Dropdown</label>
+    <select class="border border-gray-300 p-2 rounded w-64 bg-white">
+      <optgroup label="Fruits">
+        <option value="apple">Apple</option>
+        <option value="banana">Banana</option>
+      </optgroup>
+      <optgroup label="Vegetables">
+        <option value="carrot">Carrot</option>
+        <option value="spinach">Spinach</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <!-- 6. Dynamic / AJAX Simulation -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Dynamic Dropdown Simulation</label>
+    <input type="text" id="dynamicDropdown" placeholder="Type to search..." class="border border-gray-300 p-2 rounded w-64 bg-white" oninput="showDynamicSuggestions(this.value)">
+    <ul id="dynamicSuggestions" class="border border-gray-300 rounded w-64 mt-2 hidden bg-white max-h-32 overflow-auto"></ul>
+  </div>
+
+  <!-- 7. Event-triggered Dropdown -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Event-triggered Dropdown</label>
+    <select id="eventDropdown" class="border border-gray-300 p-2 rounded w-64 bg-white" onchange="alert('You selected ' + this.value)">
+      <option value="">Select an option</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+    </select>
+  </div>
+
+  <!-- 8. Large Dataset Dropdown -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Large Dataset Dropdown</label>
+    <select id="largeDatasetDropdown" class="border border-gray-300 p-2 rounded w-64 h-32 bg-white overflow-auto"></select>
+  </div>
+
+  <!-- 9. Special Characters / Unicode -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Special Characters / Unicode</label>
+    <select class="border border-gray-300 p-2 rounded w-64 bg-white">
+      <option value="smile">😊 Smile</option>
+      <option value="heart">❤️ Heart</option>
+      <option value="star">★ Star</option>
+      <option value="symbol">@#$%^&*</option>
+    </select>
+  </div>
+
+  <!-- 10. Empty Dropdown -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Empty Dropdown</label>
+    <select class="border border-gray-300 p-2 rounded w-64 bg-white"></select>
+  </div>
+
+  <!-- 11. Readonly / Locked Dropdown -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Readonly / Locked Dropdown</label>
+    <select class="border border-gray-300 p-2 rounded w-64 bg-gray-200 cursor-not-allowed" disabled>
+      <option value="1">Only Option</option>
+    </select>
+  </div>
+
+  <!-- 12. Searchable Dropdown (Custom) -->
+  <div class="mb-6">
+    <label class="block font-medium mb-2">Searchable Dropdown (Custom)</label>
+    <input type="text" id="customSearch" placeholder="Search..." class="border border-gray-300 p-2 rounded w-64 bg-white" oninput="filterCustomDropdown(this.value)">
+    <ul id="customOptions" class="border border-gray-300 rounded w-64 mt-2 bg-white max-h-32 overflow-auto hidden"></ul>
+  </div>
+
+  <script>
+    // Populate Large Dataset Dropdown
+    const largeDropdown = document.getElementById('largeDatasetDropdown');
+    for(let i=1; i<=50; i++){
+      const option = document.createElement('option');
+      option.value = `opt${i}`;
+      option.text = `Option ${i}`;
+      largeDropdown.appendChild(option);
+    }
+
+    // Dynamic Dropdown Simulation
+    const dynamicItems = ['Apple', 'Banana', 'Cherry', 'Date', 'Fig', 'Grape'];
+    function showDynamicSuggestions(value) {
+      const list = document.getElementById('dynamicSuggestions');
+      if(!value) {
+        list.style.display = 'none';
+        list.innerHTML = '';
+        return;
+      }
+      const filtered = dynamicItems.filter(item => item.toLowerCase().includes(value.toLowerCase()));
+      list.innerHTML = filtered.map(item =>
+        `<li class="p-2 hover:bg-gray-200 cursor-pointer" onclick="selectDynamic('${item}')">${item}</li>`
+      ).join('');
+      list.style.display = filtered.length ? 'block' : 'none';
+    }
+    function selectDynamic(item) {
+      document.getElementById('dynamicDropdown').value = item;
+      document.getElementById('dynamicSuggestions').style.display = 'none';
+    }
+
+    // Custom Searchable Dropdown
+    const searchItems = ['Apple', 'Banana', 'Cherry', 'Date', 'Fig', 'Grape', 'Kiwi'];
+    function filterCustomDropdown(value) {
+      const list = document.getElementById('customOptions');
+      if(!value) {
+        list.style.display = 'none';
+        list.innerHTML = '';
+        return;
+      }
+      const filtered = searchItems.filter(item => item.toLowerCase().includes(value.toLowerCase()));
+      list.innerHTML = filtered.map(item =>
+        `<li class="p-2 hover:bg-gray-200 cursor-pointer" onclick="selectCustom('${item}')">${item}</li>`
+      ).join('');
+      list.style.display = filtered.length ? 'block' : 'none';
+    }
+    function selectCustom(item) {
+      document.getElementById('customSearch').value = item;
+      document.getElementById('customOptions').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

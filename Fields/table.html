@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation Table Playground</title>
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f8;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+/* Navbar */
+nav {
+    background-color: #6b46c1;
+    color: white;
+}
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+nav ul li a {
+    display: block;
+    padding: 14px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+nav ul li a:hover {
+    background-color: #553c9a;
+    border-radius: 6px;
+}
+nav ul li a.font-bold { font-weight: bold; }
+
+h2 {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+.info-icon {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #3498db;
+    border: 1px solid #3498db;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 22px;
+    font-weight: bold;
+}
+
+/* Modal styling */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 100; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto; 
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%; 
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover {
+    color: #000;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    overflow-x: auto;
+    transition: all 0.3s ease;
+}
+
+/* Filter & Actions */
+.filter-section, .actions-section, .pagination-section {
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+input[type="text"], input[type="number"], select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: 0.2s;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52,152,219,0.3);
+}
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #3498db;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+}
+th, td {
+    padding: 14px;
+    text-align: center;
+}
+th {
+    background-color: #3498db;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    cursor: pointer;
+    user-select: none;
+}
+tr:nth-child(even) { background-color: #f9f9f9; }
+tr:hover {
+    background-color: #dff0ea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.85em;
+    color: #fff;
+}
+.status-Active { background-color: #27ae60; }
+.status-Inactive { background-color: #c0392b; }
+.status-Pending { background-color: #e67e22; }
+
+/* Row fade-in animation for new rows */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(-10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+tr.new-row { animation: fadeIn 0.3s ease; }
+
+/* Responsive adjustments */
+@media(max-width: 768px) {
+    table, thead, tbody, th, td, tr { display: block; }
+    th { text-align: left; position: sticky; top: 0; z-index: 2; }
+    td { text-align: right; padding-left: 50%; position: relative; }
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+    }
+}
+</style>
+</head>
+<body>
+
+<h2>Automation Table Playground</h2>
+<div class="info-icon" onclick="openInfoModal()">i</div>
+
+<!-- Info Modal -->
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeInfoModal()">&times;</span>
+        <h3>Table Automation Scenarios You Can Test</h3>
+        <ul>
+            <li>Verify table headers, rows, and columns</li>
+            <li>Sort columns ascending/descending</li>
+            <li>Filter rows by text, dropdown, or numeric range</li>
+            <li>Pagination (next/prev, rows per page)</li>
+            <li>Add/Edit/Delete rows dynamically</li>
+            <li>Select rows and delete selected rows</li>
+            <li>Export table to CSV</li>
+            <li>Row highlighting on click</li>
+            <li>Responsive table layout</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Add Row Modal -->
+<div id="addRowModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAddModal()">&times;</span>
+        <h3>Add New Row</h3>
+        <label>Name: <input type="text" id="newName"></label><br><br>
+        <label>Age: <input type="number" id="newAge" min="0"></label><br><br>
+        <label>Role: 
+            <select id="newRole">
+                <option value="QA">QA</option>
+                <option value="Developer">Developer</option>
+                <option value="Manager">Manager</option>
+                <option value="Designer">Designer</option>
+            </select>
+        </label><br><br>
+        <label>Status: 
+            <select id="newStatus">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </label><br><br>
+        <button onclick="confirmAddRow()">Add Row</button>
+    </div>
+</div>
+
+<!-- Navbar -->
+<nav>
+  <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../demo-form.html">Demo Form</a></li>
+    <li><a href="../records.html">Records</a></li>
+    <li><a href="../fields.html" class="font-bold">Fields</a></li>
+    <li><a href="../order.html">Order Creation</a></li>
+  </ul>
+</nav>
+
+
+<div class="container">
+
+    <!-- Filters -->
+    <div class="filter-section">
+        <input type="text" id="searchInput" placeholder="Global Search">
+        <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Pending">Pending</option>
+        </select>
+        <input type="number" id="minAge" placeholder="Min Age" min="0">
+        <input type="number" id="maxAge" placeholder="Max Age" min="0">
+        <button onclick="applyFilters()">Apply Filters</button>
+        <button onclick="resetFilters()">Reset Filters</button>
+    </div>
+
+    <!-- Actions after filters -->
+    <div class="actions-section">
+        <button onclick="openAddModal()">Add Row</button>
+        <button onclick="deleteSelected()">Delete Selected</button>
+        <button onclick="exportCSV()">Export CSV</button>
+    </div>
+
+    <!-- Table -->
+    <table id="automationTable">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                <th onclick="sortTable(1)">ID ▲▼</th>
+                <th onclick="sortTable(2)">Name ▲▼</th>
+                <th onclick="sortTable(3)">Age ▲▼</th>
+                <th onclick="sortTable(4)">Role ▲▼</th>
+                <th onclick="sortTable(5)">Status ▲▼</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination-section">
+        <button onclick="prevPage()">Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button onclick="nextPage()">Next</button>
+        <select id="rowsPerPage" onchange="changeRowsPerPage()">
+            <option value="5">5 rows</option>
+            <option value="10" selected>10 rows</option>
+            <option value="20">20 rows</option>
+        </select>
+    </div>
+</div>
+
+<script>
+let roles = ["QA", "Developer", "Manager", "Designer"];
+let statuses = ["Active", "Inactive", "Pending"];
+let originalData = [];
+let data = [];
+let currentPage = 1;
+let rowsPerPage = 10;
+let sortDirection = {};
+
+// Generate dummy data
+for (let i = 1; i <= 30; i++) {
+    let row = {
+        id: i,
+        name: "User " + i,
+        age: Math.floor(Math.random() * 50) + 20,
+        role: roles[Math.floor(Math.random() * roles.length)],
+        status: statuses[Math.floor(Math.random() * statuses.length)]
+    };
+    originalData.push(row);
+}
+data = [...originalData];
+
+// Render Table
+function renderTable() {
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = data.slice(start, end);
+    pageData.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.onclick = () => tr.classList.toggle("highlight");
+        tr.innerHTML = `
+            <td><input type="checkbox" class="rowCheckbox"></td>
+            <td data-label="ID">${row.id}</td>
+            <td data-label="Name">${row.name}</td>
+            <td data-label="Age">${row.age}</td>
+            <td data-label="Role">${row.role}</td>
+            <td data-label="Status">
+                <span class="status-badge status-${row.status}">${row.status}</span>
+            </td>
+            <td>
+                <button onclick="editRow(${row.id}, event)">Edit</button>
+                <button onclick="deleteRow(${row.id}, event)">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+    document.getElementById("pageInfo").innerText = `Page ${currentPage}`;
+}
+
+// Sorting
+function sortTable(colIndex) {
+    const keyMap = {1:'id',2:'name',3:'age',4:'role',5:'status'};
+    const key = keyMap[colIndex];
+    sortDirection[key] = !sortDirection[key];
+    data.sort((a,b) => {
+        if(a[key] < b[key]) return sortDirection[key] ? -1 : 1;
+        if(a[key] > b[key]) return sortDirection[key] ? 1 : -1;
+        return 0;
+    });
+    renderTable();
+}
+
+// Filtering
+function applyFilters() {
+    const searchVal = document.getElementById("searchInput").value.toLowerCase();
+    const statusVal = document.getElementById("statusFilter").value;
+    const minAge = document.getElementById("minAge").value;
+    const maxAge = document.getElementById("maxAge").value;
+
+    data = originalData.filter(row => {
+        let match = true;
+        if(searchVal) match = Object.values(row).some(val => val.toString().toLowerCase().includes(searchVal));
+        if(match && statusVal) match = row.status === statusVal;
+        if(match && minAge) match = row.age >= minAge;
+        if(match && maxAge) match = row.age <= maxAge;
+        return match;
+    });
+
+    currentPage = 1;
+    renderTable();
+}
+
+function resetFilters() {
+    data = [...originalData];
+    currentPage = 1;
+    renderTable();
+}
+
+// Add Row Modal
+function openAddModal() { document.getElementById('addRowModal').style.display = 'block'; }
+function closeAddModal() { document.getElementById('addRowModal').style.display = 'none'; }
+function confirmAddRow() {
+    const name = document.getElementById('newName').value;
+    const age = parseInt(document.getElementById('newAge').value);
+    const role = document.getElementById('newRole').value;
+    const status = document.getElementById('newStatus').value;
+    if(!name || !age) { alert("Please enter Name and Age."); return; }
+    const newId = originalData.length ? originalData[originalData.length-1].id + 1 : 1;
+    const newRow = {id: newId, name, age, role, status};
+    originalData.push(newRow);
+    data.push(newRow);
+    closeAddModal();
+    renderTable();
+    const tableBody = document.getElementById('tableBody');
+    const lastRow = tableBody.lastElementChild;
+    if(lastRow) lastRow.classList.add('new-row');
+}
+
+// Edit/Delete Rows
+function editRow(id, event) {
+    event.stopPropagation();
+    const row = originalData.find(r => r.id === id);
+    const newName = prompt("Enter new name:", row.name);
+    if(newName) row.name = newName;
+    data = [...originalData];
+    renderTable();
+}
+function deleteRow(id, event) {
+    event.stopPropagation();
+    originalData = originalData.filter(r => r.id !== id);
+    data = data.filter(r => r.id !== id);
+    renderTable();
+}
+
+// Select/Delete Multiple
+function toggleSelectAll(cb) { document.querySelectorAll(".rowCheckbox").forEach(ch => ch.checked = cb.checked); }
+function deleteSelected() {
+    const checkboxes = document.querySelectorAll(".rowCheckbox");
+    checkboxes.forEach((cb, idx) => {
+        if(cb.checked){
+            const id = data[(currentPage-1)*rowsPerPage + idx].id;
+            originalData = originalData.filter(r => r.id !== id);
+        }
+    });
+    data = [...originalData];
+    renderTable();
+}
+
+// CSV Export
+function exportCSV() {
+    let csv = "ID,Name,Age,Role,Status\n";
+    originalData.forEach(row => {
+        csv += `${row.id},${row.name},${row.age},${row.role},${row.status}\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const link = document.createElement("a");
+    link.download = "table_data.csv";
+    link.href = URL.createObjectURL(blob);
+    link.click();
+}
+
+// Pagination
+function prevPage() { if(currentPage>1) currentPage--; renderTable(); }
+function nextPage() { if(currentPage*rowsPerPage < data.length) currentPage++; renderTable(); }
+function changeRowsPerPage() { rowsPerPage = parseInt(document.getElementById("rowsPerPage").value); currentPage=1; renderTable(); }
+
+// Info Modal
+function openInfoModal() { document.getElementById('infoModal').style.display = 'block'; }
+function closeInfoModal() { document.getElementById('infoModal').style.display = 'none'; }
+
+window.onclick = function(event) {
+    if(event.target==document.getElementById('infoModal')) closeInfoModal();
+    if(event.target==document.getElementById('addRowModal')) closeAddModal();
+}
+
+// Initial render
+renderTable();
+</script>
+</body>
+</html>
