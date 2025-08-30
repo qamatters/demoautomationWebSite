@@ -3,64 +3,280 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Booking Workflow</title>
+  <title>Pro Travel Automation Playground</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-6">
 
-  <nav class="bg-purple-600 text-white p-4 mb-6">
-    <ul class="flex gap-6">
-      <a href="../../../index.html" class="hover:text-gray-200">Automation Playground</a>
+<!-- Navbar -->
+<nav class="bg-purple-600 text-white p-4 mb-6 flex justify-between items-center">
+  <a href="../../../index.html" class="hover:text-gray-200 font-bold">Automation Playground</a>
+  <div class="text-white cursor-pointer" onclick="toggleInfo()">ℹ️ Info</div>
+</nav>
+
+<!-- Info Modal -->
+<div id="infoModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+  <div class="bg-white p-6 rounded shadow w-11/12 md:w-2/3 lg:w-1/2 relative">
+    <h2 class="text-xl font-bold mb-4">Travel Automation Use Cases</h2>
+    <ul class="list-disc pl-5">
+      <li>Search flights and hotels with filters</li>
+      <li>Select flight, hotel, seat type, room type</li>
+      <li>Passenger details including meal preferences & loyalty points</li>
+      <li>Add-ons: Car rental, Travel insurance, Airport pickup</li>
+      <li>Dynamic price calculation</li>
+      <li>Booking confirmation and payment simulation</li>
+      <li>Booking history table with cancellation</li>
+      <li>Search/filter bookings in history</li>
+      <li>Multi-passenger booking simulation</li>
     </ul>
-  </nav>
-
-  <!-- Search Flights & Hotels -->
-  <div class="bg-white p-6 rounded shadow mb-6">
-    <h2 class="text-xl font-bold mb-4">Search Flights & Hotels</h2>
-    <div class="flex gap-4 mb-4">
-      <input type="text" placeholder="From" class="border p-2 rounded flex-1" id="from">
-      <input type="text" placeholder="To" class="border p-2 rounded flex-1" id="to">
-      <input type="date" class="border p-2 rounded flex-1" id="date">
-      <input type="number" placeholder="Guests" class="border p-2 rounded w-24" id="guests">
-      <button class="bg-green-500 text-white px-4 py-2 rounded" onclick="searchFlights()">Search</button>
-    </div>
-    <div id="results" class="mt-4"></div>
+    <button class="absolute top-2 right-2 text-red-500 font-bold" onclick="toggleInfo()">X</button>
   </div>
+</div>
 
-  <script>
-    function searchFlights() {
-      const results = `
-        <table class="min-w-full border border-gray-200 text-left">
-          <thead class="bg-gray-200">
-            <tr>
-              <th class="p-2 border">Flight</th>
-              <th class="p-2 border">Hotel</th>
-              <th class="p-2 border">Price</th>
-              <th class="p-2 border">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="p-2 border">Flight A</td>
-              <td class="p-2 border">Hotel X</td>
-              <td class="p-2 border">$500</td>
-              <td class="p-2 border"><button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="book()">Book</button></td>
-            </tr>
-            <tr>
-              <td class="p-2 border">Flight B</td>
-              <td class="p-2 border">Hotel Y</td>
-              <td class="p-2 border">$700</td>
-              <td class="p-2 border"><button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="book()">Book</button></td>
-            </tr>
-          </tbody>
-        </table>`;
-      document.getElementById('results').innerHTML = results;
+<!-- Search Flights & Hotels -->
+<div class="bg-white p-6 rounded shadow mb-6">
+  <h2 class="text-xl font-bold mb-4">Search Flights & Hotels</h2>
+  <div class="flex flex-wrap gap-4 mb-4">
+    <input type="text" placeholder="From" class="border p-2 rounded flex-1" id="from">
+    <input type="text" placeholder="To" class="border p-2 rounded flex-1" id="to">
+    <input type="date" class="border p-2 rounded flex-1" id="date">
+    <input type="number" placeholder="Guests" class="border p-2 rounded w-24" id="guests">
+    <select id="class" class="border p-2 rounded w-32">
+      <option value="Economy">Economy</option>
+      <option value="Business">Business</option>
+    </select>
+    <select id="airline" class="border p-2 rounded w-32">
+      <option value="Any">Any Airline</option>
+      <option value="Airline A">Airline A</option>
+      <option value="Airline B">Airline B</option>
+    </select>
+    <select id="hotelRating" class="border p-2 rounded w-32">
+      <option value="Any">Any Rating</option>
+      <option value="3">3 Stars</option>
+      <option value="4">4 Stars</option>
+      <option value="5">5 Stars</option>
+    </select>
+    <button class="bg-green-500 text-white px-4 py-2 rounded" onclick="searchFlights()">Search</button>
+  </div>
+  <div id="results" class="mt-4"></div>
+</div>
+
+<!-- Passenger Details Form -->
+<div id="passengerForm" class="bg-white p-6 rounded shadow mb-6 hidden">
+  <h2 class="text-xl font-bold mb-4">Passenger Details & Extras</h2>
+  <div id="passengerContainer" class="flex flex-col gap-4"></div>
+  <div class="flex flex-wrap gap-4 mb-4">
+    <label><input type="checkbox" id="carRental" class="mr-1"> Car Rental ($50)</label>
+    <label><input type="checkbox" id="insurance" class="mr-1"> Travel Insurance ($20)</label>
+    <label><input type="checkbox" id="airportPickup" class="mr-1"> Airport Pickup ($30)</label>
+    <label><input type="checkbox" id="loyalty" class="mr-1"> Apply Loyalty Discount ($30)</label>
+  </div>
+  <button class="bg-blue-500 text-white px-4 py-2 rounded mt-2" onclick="confirmBooking()">Confirm Booking</button>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+  <div class="bg-white p-6 rounded shadow w-11/12 md:w-1/3 relative">
+    <h2 class="text-xl font-bold mb-4">Cancel Booking</h2>
+    <p class="mb-4">Are you sure you want to cancel this booking?</p>
+    <div class="flex justify-end gap-4">
+      <button class="bg-gray-300 px-4 py-2 rounded" onclick="closeCancelModal()">Cancel</button>
+      <button id="confirmCancelBtn" class="bg-red-500 text-white px-4 py-2 rounded">Confirm</button>
+    </div>
+    <button class="absolute top-2 right-2 text-red-500 font-bold" onclick="closeCancelModal()">X</button>
+  </div>
+</div>
+
+<!-- Booking History -->
+<div class="bg-white p-6 rounded shadow mb-6">
+  <h2 class="text-xl font-bold mb-4">Booking History</h2>
+  <input type="text" id="searchHistory" placeholder="Search by flight/hotel/status" class="border p-2 rounded mb-3 w-full" onkeyup="filterHistory()">
+  <table class="min-w-full border border-gray-200 text-left">
+    <thead class="bg-gray-200">
+    <tr>
+      <th class="p-2 border">Flight</th>
+      <th class="p-2 border">Hotel</th>
+      <th class="p-2 border">Guests</th>
+      <th class="p-2 border">Seat</th>
+      <th class="p-2 border">Meal</th>
+      <th class="p-2 border">Extras</th>
+      <th class="p-2 border">Price</th>
+      <th class="p-2 border">Action</th>
+    </tr>
+    </thead>
+    <tbody id="historyBody"></tbody>
+  </table>
+</div>
+
+<script>
+  let bookingHistory = [];
+  let cancelIndex = null;
+  let currentBookingData = [];
+
+  // Info modal toggle
+  function toggleInfo() {
+    document.getElementById('infoModal').classList.toggle('hidden');
+  }
+
+  // Search Flights
+  function searchFlights() {
+    const from = document.getElementById('from').value.trim();
+    const to = document.getElementById('to').value.trim();
+    const date = document.getElementById('date').value;
+    const guests = parseInt(document.getElementById('guests').value);
+    const travelClass = document.getElementById('class').value;
+    const airline = document.getElementById('airline').value;
+    const hotelRating = document.getElementById('hotelRating').value;
+
+    if (!from || !to || !date || !guests) {
+      alert('Please fill all fields!');
+      return;
     }
 
-    function book() {
-      alert('Booking simulated. Payment successful!');
+    const flights = [
+      {flight: "Flight A", hotel: "Hotel X", price: 500, airline: "Airline A", rating: 4},
+      {flight: "Flight B", hotel: "Hotel Y", price: 700, airline: "Airline B", rating: 5},
+      {flight: "Flight C", hotel: "Hotel Z", price: 600, airline: "Airline A", rating: 3}
+    ];
+
+    let filtered = flights.filter(f =>
+      (airline === "Any" || f.airline === airline) &&
+      (hotelRating === "Any" || f.rating == hotelRating)
+    );
+    if(filtered.length === 0) filtered = flights;
+
+    let resultsHTML = '<div class="grid gap-4">';
+    filtered.forEach(f => {
+      resultsHTML += `
+        <div class="border p-4 rounded flex justify-between items-center">
+          <div>
+            <p class="font-bold">${f.flight} - ${travelClass} (${f.airline})</p>
+            <p>${f.hotel} - ${f.rating}⭐</p>
+            <p>Price: $${f.price}</p>
+          </div>
+          <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="showPassengerForm('${f.flight}','${f.hotel}',${f.price},${guests})">Select</button>
+        </div>`;
+    });
+    resultsHTML += '</div>';
+    document.getElementById('results').innerHTML = resultsHTML;
+  }
+
+  // Show passenger form
+  function showPassengerForm(flight, hotel, price, guests) {
+    currentBookingData = {flight, hotel, price, guests};
+    const container = document.getElementById('passengerContainer');
+    container.innerHTML = '';
+    for(let i=1; i<=guests; i++){
+      container.innerHTML += `
+        <div class="border p-3 rounded">
+          <h3 class="font-bold mb-2">Passenger ${i}</h3>
+          <input type="text" placeholder="Full Name" class="border p-2 rounded w-full mb-2 passengerName">
+          <input type="number" placeholder="Age" class="border p-2 rounded w-full mb-2 passengerAge">
+          <input type="text" placeholder="Passport Number" class="border p-2 rounded w-full mb-2 passengerPassport">
+          <textarea placeholder="Special Requests" class="border p-2 rounded w-full mb-2 passengerRequests"></textarea>
+          <div class="flex gap-4 flex-wrap">
+            <label>Seat: <select class="border p-1 rounded passengerSeat"><option>Window</option><option>Middle</option><option>Aisle</option></select></label>
+            <label>Meal: <select class="border p-1 rounded passengerMeal"><option>Veg</option><option>Non-Veg</option><option>Other</option></select></label>
+          </div>
+        </div>`;
     }
-  </script>
+    document.getElementById('passengerForm').classList.remove('hidden');
+    window.scrollTo({ top: document.getElementById('passengerForm').offsetTop, behavior: 'smooth' });
+  }
+
+  // Confirm booking
+  function confirmBooking() {
+    const container = document.getElementById('passengerContainer');
+    const names = container.querySelectorAll('.passengerName');
+    const ages = container.querySelectorAll('.passengerAge');
+    const passports = container.querySelectorAll('.passengerPassport');
+    const seats = container.querySelectorAll('.passengerSeat');
+    const meals = container.querySelectorAll('.passengerMeal');
+
+    for(let i=0;i<currentBookingData.guests;i++){
+      if(!names[i].value || !ages[i].value || !passports[i].value){
+        alert('Please fill all passenger details!');
+        return;
+      }
+    }
+
+    let extrasArr = [];
+    if(document.getElementById('carRental')?.checked) extrasArr.push('Car Rental');
+    if(document.getElementById('insurance')?.checked) extrasArr.push('Insurance');
+    if(document.getElementById('airportPickup')?.checked) extrasArr.push('Airport Pickup');
+    const applyLoyalty = document.getElementById('loyalty')?.checked;
+
+    let totalPrice = currentBookingData.price * currentBookingData.guests;
+    if(extrasArr.includes('Car Rental')) totalPrice += 50;
+    if(extrasArr.includes('Insurance')) totalPrice += 20;
+    if(extrasArr.includes('Airport Pickup')) totalPrice +=30;
+    if(applyLoyalty) totalPrice -=30;
+
+    bookingHistory.push({
+      flight: currentBookingData.flight,
+      hotel: currentBookingData.hotel,
+      guests: currentBookingData.guests,
+      seat: seats[0].value,
+      meal: meals[0].value,
+      extras: extrasArr.join(', '),
+      price: '$'+totalPrice
+    });
+
+    renderBookingHistory();
+    alert('Booking confirmed! Total: $'+totalPrice);
+    document.getElementById('passengerForm').classList.add('hidden');
+    container.innerHTML = '';
+    ['carRental','insurance','airportPickup','loyalty'].forEach(id=>{if(document.getElementById(id)) document.getElementById(id).checked=false;});
+  }
+
+  // Render booking history
+  function renderBookingHistory(){
+    const tbody = document.getElementById('historyBody');
+    tbody.innerHTML='';
+    bookingHistory.forEach((b,i)=>{
+      tbody.innerHTML += `<tr>
+        <td class="p-2 border">${b.flight}</td>
+        <td class="p-2 border">${b.hotel}</td>
+        <td class="p-2 border">${b.guests}</td>
+        <td class="p-2 border">${b.seat}</td>
+        <td class="p-2 border">${b.meal}</td>
+        <td class="p-2 border">${b.extras}</td>
+        <td class="p-2 border">${b.price}</td>
+        <td class="p-2 border"><button class="bg-red-500 text-white px-2 py-1 rounded" onclick="cancelBooking(${i})">Cancel</button></td>
+      </tr>`;
+    });
+  }
+
+  // Cancel booking modal
+  function cancelBooking(index){
+    cancelIndex=index;
+    document.getElementById('cancelModal').classList.remove('hidden');
+  }
+
+  function closeCancelModal(){
+    cancelIndex=null;
+    document.getElementById('cancelModal').classList.add('hidden');
+  }
+
+  // Confirm cancellation
+  document.getElementById('confirmCancelBtn').addEventListener('click',()=>{
+    if(cancelIndex!==null){
+      bookingHistory.splice(cancelIndex, 1); // remove entry
+      renderBookingHistory();
+      closeCancelModal();
+    }
+  });
+
+  // Filter history
+  function filterHistory(){
+    const val=document.getElementById('searchHistory').value.toLowerCase();
+    const rows=document.getElementById('historyBody').children;
+    for(let r of rows){
+      const match=[...r.children].some(td=>td.innerText.toLowerCase().includes(val));
+      r.style.display=match?'':'none';
+    }
+  }
+</script>
 
 </body>
 </html>
