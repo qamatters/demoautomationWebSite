@@ -25,7 +25,18 @@
   }
 </style>
 </head>
-<body class="bg-gray-100 p-6">
+<body class="bg-gray-100 dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100">
+
+<!-- Navbar -->
+<nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+  <ul class="flex space-x-4">
+    <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+    <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+    <li><a href="../WorkFlows/index.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Workflows</a></li>
+    <li><a href="../SpecialFields/index.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Specific Use Cases</a></li>
+
+  </ul>
+</nav>
 
 <div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6 space-y-6">
 
@@ -118,7 +129,7 @@
     <!-- Close Button -->
     <button id="closeOverlayBtn" class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded z-50">X</button>
     
-    <!-- Iframe for fields.html -->
+    <!-- Iframe for index.html -->
     <iframe src="file:///Users/deepakmathpal/Downloads/demo-automation-site/fields.html"
             class="w-full h-full bg-white rounded shadow-lg border"></iframe>
   </div>
