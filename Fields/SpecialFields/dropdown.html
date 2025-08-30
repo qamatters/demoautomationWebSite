@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Insights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
+
+<!-- Navbar -->
+<nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+        <li><a href="../../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+        <li><a href="fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+    </ul>
+</nav>
+
+<div class="max-w-6xl mx-auto p-6 space-y-6">
+
+    <!-- Search Input -->
+    <div class="flex flex-col space-y-2">
+        <div class="flex items-center space-x-2">
+            <input id="filter-insight-predictive-input" type="text" placeholder="Search Insights"
+                   class="flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-400 dark:bg-gray-800 dark:border-gray-700"/>
+            <button class="p-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600" aria-label="search">
+                🔍
+            </button>
+        </div>
+
+        <!-- Selected Filters Container -->
+        <div id="selected-filters" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <!-- Accordion Filters in Row -->
+    <div class="flex flex-wrap gap-4">
+
+        <!-- Series Accordion -->
+        <div class="border rounded-lg overflow-hidden w-64">
+            <button type="button" class="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 accordion-trigger">
+                <span>Series</span>
+                <span>▼</span>
+            </button>
+            <div class="accordion-content hidden bg-white dark:bg-gray-800 px-4 py-2">
+                <ul class="space-y-1">
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Fixed Income Insight</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Market Insight</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Strategist's Corner</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Equity Insight</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Retirement Insight</span></label></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Theme Accordion -->
+        <div class="border rounded-lg overflow-hidden w-64">
+            <button type="button" class="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 accordion-trigger">
+                <span>Theme</span>
+                <span>▼</span>
+            </button>
+            <div class="accordion-content hidden bg-white dark:bg-gray-800 px-4 py-2">
+                <ul class="space-y-1">
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Market Insights</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Portfolio Insights</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Retirement Insights</span></label></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Topic Accordion -->
+        <div class="border rounded-lg overflow-hidden w-64">
+            <button type="button" class="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 accordion-trigger">
+                <span>Topic</span>
+                <span>▼</span>
+            </button>
+            <div class="accordion-content hidden bg-white dark:bg-gray-800 px-4 py-2">
+                <ul class="space-y-1">
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Macro</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Active Management</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Market Volatility</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Sustainability</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>ETFs</span></label></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Multimedia Format Accordion -->
+        <div class="border rounded-lg overflow-hidden w-64">
+            <button type="button" class="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 accordion-trigger">
+                <span>Multimedia Format</span>
+                <span>▼</span>
+            </button>
+            <div class="accordion-content hidden bg-white dark:bg-gray-800 px-4 py-2">
+                <ul class="space-y-1">
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Read</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Watch</span></label></li>
+                    <li><label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="filter-checkbox"><span>Listen</span></label></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Details Section -->
+    <div class="mt-6">
+        <h2 class="text-lg font-semibold mb-2">Insight Details</h2>
+        <ul id="details-list" class="space-y-2">
+            <li class="p-2 border rounded-lg bg-white dark:bg-gray-800">Fixed Income Insight: Bond markets are stable</li>
+            <li class="p-2 border rounded-lg bg-white dark:bg-gray-800">Market Insight: S&P 500 rose 2% this week</li>
+            <li class="p-2 border rounded-lg bg-white dark:bg-gray-800">Strategist's Corner: Focus on tech and green energy</li>
+            <li class="p-2 border rounded-lg bg-white dark:bg-gray-800">Equity Insight: Strong growth in emerging markets</li>
+            <li class="p-2 border rounded-lg bg-white dark:bg-gray-800">Retirement Insight: Best strategies for early retirement</li>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+    // Accordion: independent expand/collapse
+    document.querySelectorAll('.accordion-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.nextElementSibling.classList.toggle('hidden');
+      });
+    });
+
+    // Search input: filter checkboxes and details
+    const searchInput = document.getElementById('filter-insight-predictive-input');
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.toLowerCase();
+
+      // Filter accordion items
+      document.querySelectorAll('.accordion-content li').forEach(li => {
+        li.style.display = li.textContent.toLowerCase().includes(term) ? 'flex' : 'none';
+      });
+
+      // Filter details
+      document.querySelectorAll('#details-list li').forEach(li => {
+        li.style.display = li.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+      });
+    });
+
+    // Selected filters
+    const selectedContainer = document.getElementById('selected-filters');
+    document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('click', e => {
+        e.stopPropagation(); // prevent accordion toggle
+        const labelText = checkbox.nextElementSibling.textContent;
+
+        if (checkbox.checked) {
+          const tag = document.createElement('span');
+          tag.className = 'bg-purple-200 dark:bg-purple-700 text-purple-900 dark:text-white px-2 py-1 rounded-full flex items-center gap-1';
+          tag.textContent = labelText;
+
+          const cross = document.createElement('button');
+          cross.className = 'font-bold';
+          cross.innerHTML = '✕';
+          cross.addEventListener('click', () => {
+            checkbox.checked = false;
+            selectedContainer.removeChild(tag);
+          });
+
+          tag.appendChild(cross);
+          selectedContainer.appendChild(tag);
+        } else {
+          selectedContainer.querySelectorAll('span').forEach(tag => {
+            if (tag.firstChild.textContent === labelText) {
+              selectedContainer.removeChild(tag);
+            }
+          });
+        }
+      });
+    });
+</script>
+
+</body>
+</html>

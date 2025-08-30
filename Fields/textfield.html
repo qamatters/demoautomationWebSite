@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TextField Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          darkMode: 'class'
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-100">
+
+<!-- Navbar -->
+<nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+        <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+        <li><a href="../demo-form.html" class="hover:bg-purple-900 px-3 py-2 rounded">Demo Form</a></li>
+        <li><a href="../records.html" class="hover:bg-purple-900 px-3 py-2 rounded">Records</a></li>
+        <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+        <li><a href="../order.html" class="hover:bg-purple-900 px-3 py-2 rounded">Order Creation</a></li>
+    </ul>
+</nav>
+<!-- Dark mode toggle -->
+<button id="darkToggle" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-3 py-1 rounded-lg shadow hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+    🌙 Dark
+</button>
+</nav>
+
+<!-- Page Content -->
+<div class="max-w-4xl mx-auto p-6 space-y-10">
+    <h1 class="text-2xl font-bold mb-4">TextField Playground</h1>
+
+    <!-- Basic -->
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+        <h2 class="text-lg font-semibold">Basic Text Fields</h2>
+        <div class="space-y-3">
+            <input data-testid="basic-input" type="text" placeholder="Default input" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <input data-testid="focus-input" type="text" placeholder="With border focus" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-400 dark:bg-gray-900 dark:border-gray-600"/>
+            <input data-testid="disabled-input" type="text" placeholder="Disabled input" class="w-full border rounded-lg px-3 py-2 bg-gray-200 dark:bg-gray-700 cursor-not-allowed" disabled/>
+            <input data-testid="readonly-input" type="text" placeholder="Read-only input" class="w-full border rounded-lg px-3 py-2 bg-gray-100 dark:bg-gray-700" readonly/>
+        </div>
+    </section>
+
+    <!-- With Labels -->
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+        <h2 class="text-lg font-semibold">With Labels</h2>
+        <div class="space-y-3">
+            <label class="block">
+                <span class="text-gray-700 dark:text-gray-300">Full Name</span>
+                <input type="text" placeholder="Enter your name" required class="mt-1 block w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            </label>
+            <label class="block">
+                <span class="text-gray-700 dark:text-gray-300">Email (required)</span>
+                <input type="email" required placeholder="Enter email" class="mt-1 block w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-400 dark:bg-gray-900 dark:border-gray-600"/>
+            </label>
+        </div>
+    </section>
+
+    <!-- Sizes -->
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+        <h2 class="text-lg font-semibold">Different Sizes</h2>
+        <div class="space-y-3">
+            <input type="text" placeholder="Small" class="w-full border rounded-lg px-2 py-1 text-sm dark:bg-gray-900 dark:border-gray-600"/>
+            <input type="text" placeholder="Medium" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <input type="text" placeholder="Large" class="w-full border rounded-lg px-4 py-3 text-lg dark:bg-gray-900 dark:border-gray-600"/>
+        </div>
+    </section>
+
+    <!-- With Icons -->
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+        <h2 class="text-lg font-semibold">With Icons</h2>
+        <div class="space-y-3">
+            <div class="relative">
+                <input type="text" placeholder="Search..." class="w-full border rounded-lg pl-10 pr-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+                <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+            </div>
+            <div class="relative">
+                <input id="passwordField" type="password" placeholder="Enter password" class="w-full border rounded-lg pl-10 pr-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+                <span class="absolute left-3 top-2.5 text-gray-400">🔒</span>
+                <p id="strengthMsg" class="text-sm mt-1"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Validation States -->
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+        <h2 class="text-lg font-semibold">Validation States</h2>
+        <div class="space-y-3">
+            <div>
+                <input type="text" placeholder="Success input" class="w-full border border-green-400 rounded-lg px-3 py-2 dark:bg-gray-900"/>
+                <p class="text-green-600 text-sm mt-1">Looks good!</p>
+            </div>
+            <div>
+                <input type="text" placeholder="Error input" required pattern="\d+" class="w-full border border-red-400 rounded-lg px-3 py-2 dark:bg-gray-900"/>
+                <p class="text-red-600 text-sm mt-1">Must be a number.</p>
+            </div>
+            <div>
+                <input type="text" placeholder="Warning input" maxlength="10" id="warnInput" class="w-full border border-yellow-400 rounded-lg px-3 py-2 dark:bg-gray-900"/>
+                <p id="warnCount" class="text-yellow-600 text-sm mt-1">0/10 characters</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Fields -->
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+        <h2 class="text-lg font-semibold">Special Types</h2>
+        <div class="space-y-3">
+            <input type="email" placeholder="Email field" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <input type="url" placeholder="Website URL" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <input type="number" placeholder="Number input" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <input type="search" placeholder="Search input" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <input type="tel" placeholder="Phone input" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <input type="date" class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+        </div>
+    </section>
+
+    <!-- Live Preview -->
+    <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow space-y-4">
+        <h2 class="text-lg font-semibold">Live Preview</h2>
+        <div class="space-y-3">
+            <input id="liveInput" type="text" placeholder="Type something..." class="w-full border rounded-lg px-3 py-2 dark:bg-gray-900 dark:border-gray-600"/>
+            <div class="p-3 border rounded-lg bg-gray-50 dark:bg-gray-900 dark:border-gray-600">
+                <p class="text-sm text-gray-500">Preview:</p>
+                <p id="previewText" class="font-semibold text-purple-600 dark:text-purple-300"></p>
+            </div>
+            <button id="copyBtn" class="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600">📋 Copy Text</button>
+        </div>
+    </section>
+</div>
+
+<!-- Script for interactivity -->
+<script>
+    const toggleBtn = document.getElementById('darkToggle');
+    const html = document.documentElement;
+    function updateButton() {
+      toggleBtn.textContent = html.classList.contains('dark') ? "🌞 Light" : "🌙 Dark";
+    }
+    toggleBtn.addEventListener('click', () => { html.classList.toggle('dark'); updateButton(); });
+    updateButton();
+
+    // Character counter
+    const warnInput = document.getElementById('warnInput');
+    const warnCount = document.getElementById('warnCount');
+    warnInput?.addEventListener('input', () => {
+      warnCount.textContent = `${warnInput.value.length}/10 characters`;
+    });
+
+    // Live preview
+    const liveInput = document.getElementById('liveInput');
+    const previewText = document.getElementById('previewText');
+    liveInput?.addEventListener('input', () => {
+      previewText.textContent = liveInput.value;
+    });
+
+    // Copy button
+    document.getElementById('copyBtn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(liveInput.value);
+      alert("Copied: " + liveInput.value);
+    });
+
+    // Password strength check
+    const pwdField = document.getElementById('passwordField');
+    const strengthMsg = document.getElementById('strengthMsg');
+    pwdField?.addEventListener('input', () => {
+      const val = pwdField.value;
+      let strength = "Weak", color = "text-red-500";
+      if (val.length > 8 && /[A-Z]/.test(val) && /\d/.test(val)) { strength = "Strong"; color = "text-green-500"; }
+      else if (val.length > 5) { strength = "Medium"; color = "text-yellow-500"; }
+      strengthMsg.textContent = `Password Strength: ${strength}`;
+      strengthMsg.className = `text-sm mt-1 ${color}`;
+    });
+
+    // Utility functions for validation
+function validateEmail(input, errorEl) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  toggleError(!regex.test(input.value), errorEl);
+}
+
+function validateURL(input, errorEl) {
+  try {
+    new URL(input.value);
+    toggleError(false, errorEl);
+  } catch {
+    toggleError(true, errorEl);
+  }
+}
+
+function validateNumber(input, errorEl) {
+  toggleError(input.value === "" || input.value < 1 || input.value > 100, errorEl);
+}
+
+function validatePhone(input, errorEl) {
+  const regex = /^[0-9]{10}$/;
+  toggleError(!regex.test(input.value), errorEl);
+}
+
+function validateDate(input, errorEl) {
+  toggleError(!input.value, errorEl);
+}
+
+function toggleError(show, errorEl) {
+  if (show) errorEl.classList.remove("hidden");
+  else errorEl.classList.add("hidden");
+}
+
+// Attach real-time validation
+document.getElementById("emailField")?.addEventListener("input", (e) =>
+  validateEmail(e.target, document.getElementById("emailError"))
+);
+
+document.getElementById("urlField")?.addEventListener("input", (e) =>
+  validateURL(e.target, document.getElementById("urlError"))
+);
+
+document.getElementById("numField")?.addEventListener("input", (e) =>
+  validateNumber(e.target, document.getElementById("numError"))
+);
+
+document.getElementById("phoneField")?.addEventListener("input", (e) =>
+  validatePhone(e.target, document.getElementById("phoneError"))
+);
+
+document.getElementById("dateField")?.addEventListener("input", (e) =>
+  validateDate(e.target, document.getElementById("dateError"))
+);
+
+// Form submit validation
+const form = document.getElementById("specialForm");
+form?.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  validateEmail(emailField, emailError);
+  validateURL(urlField, urlError);
+  validateNumber(numField, numError);
+  validatePhone(phoneField, phoneError);
+  validateDate(dateField, dateError);
+
+  // If no errors are visible, consider valid
+  const errors = form.querySelectorAll("p:not(.hidden)");
+  if (errors.length === 0) {
+    alert("Form submitted successfully!");
+    form.reset();
+  }
+});
+
+
+
+</script>
+
+</body>
+</html>

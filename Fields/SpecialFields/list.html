@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dual List Pro Version</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:green font-sans">
+
+<!-- Navbar -->
+<nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+        <li><a href="../../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+        <li><a href="fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+    </ul>
+</nav>
+
+
+<div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-6 bg-white shadow-2xl rounded-2xl p-6 w-full max-w-5xl">
+
+    <!-- Left List -->
+    <div class="flex-1 flex flex-col">
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-lg font-semibold">Available Items</h2>
+            <span class="text-gray-500 text-sm" id="leftCount">6 items</span>
+        </div>
+        <input type="text" placeholder="Search..."
+               class="w-full px-3 py-2 mb-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+               onkeyup="filterList(this,'leftList')">
+        <select id="leftList" multiple class="w-full h-64 border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300">
+            <option>Apple</option>
+            <option>Banana</option>
+            <option>Cherry</option>
+            <option>Date</option>
+            <option>Elderberry</option>
+            <option>Fig</option>
+        </select>
+    </div>
+
+    <!-- Arrows -->
+    <div class="flex flex-col justify-center space-y-3 lg:space-y-4 items-center">
+        <button id="moveRight" onclick="moveSelected('leftList','rightList')"
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300" disabled>→</button>
+        <button id="moveLeft" onclick="moveSelected('rightList','leftList')"
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300" disabled>←</button>
+        <button onclick="moveAll('leftList','rightList')"
+                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Move All →</button>
+        <button onclick="moveAll('rightList','leftList')"
+                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">← Move All</button>
+    </div>
+
+    <!-- Right List -->
+    <div class="flex-1 flex flex-col">
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-lg font-semibold">Selected Items</h2>
+            <span class="text-gray-500 text-sm" id="rightCount">0 items</span>
+        </div>
+        <input type="text" placeholder="Search..."
+               class="w-full px-3 py-2 mb-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+               onkeyup="filterList(this,'rightList')">
+        <select id="rightList" multiple class="w-full h-64 border rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300">
+        </select>
+    </div>
+
+</div>
+
+<script>
+    const leftList = document.getElementById('leftList');
+    const rightList = document.getElementById('rightList');
+    const moveRightBtn = document.getElementById('moveRight');
+    const moveLeftBtn = document.getElementById('moveLeft');
+    const leftCount = document.getElementById('leftCount');
+    const rightCount = document.getElementById('rightCount');
+
+    function updateCounts() {
+      leftCount.textContent = `${leftList.options.length} items`;
+      rightCount.textContent = `${rightList.options.length} items`;
+      moveRightBtn.disabled = leftList.selectedOptions.length === 0;
+      moveLeftBtn.disabled = rightList.selectedOptions.length === 0;
+    }
+
+    // Move selected items
+    function moveSelected(fromId, toId) {
+      const fromList = document.getElementById(fromId);
+      const toList = document.getElementById(toId);
+      Array.from(fromList.selectedOptions).forEach(option => {
+        toList.add(option);
+      });
+      updateCounts();
+    }
+
+    // Move all items
+    function moveAll(fromId, toId) {
+      const fromList = document.getElementById(fromId);
+      const toList = document.getElementById(toId);
+      Array.from(fromList.options).forEach(option => {
+        toList.add(option);
+      });
+      updateCounts();
+    }
+
+    // Filter items in a list
+    function filterList(input, listId) {
+      const filter = input.value.toLowerCase();
+      const list = document.getElementById(listId);
+      Array.from(list.options).forEach(option => {
+        option.style.display = option.text.toLowerCase().includes(filter) ? '' : 'none';
+      });
+    }
+
+    // Enable/disable arrow buttons based on selection
+    leftList.addEventListener('change', updateCounts);
+    rightList.addEventListener('change', updateCounts);
+
+    updateCounts();
+</script>
+
+</body>
+</html>
