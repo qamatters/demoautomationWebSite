@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Alerts Automation Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-modal {
+          display: none;
+          position: fixed;
+          z-index: 50;
+          left: 0; top: 0;
+          width: 100%; height: 100%;
+          background: rgba(0,0,0,0.5);
+          justify-content: center;
+          align-items: center;
+        }
+        .custom-modal.active { display: flex; }
+        .custom-modal-content {
+          background: white; padding: 20px; border-radius: 8px;
+          max-width: 400px; width: 90%; text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Navbar -->
+<nav class="bg-purple-700 text-white p-4 flex justify-between items-center">
+    <ul class="flex space-x-4">
+        <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+        <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+        <li><a href="../WorkFlows/index.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Workflows</a></li>
+        <li><a href="../SpecialFields/index.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Specific Use Cases</a></li>
+    </ul>
+</nav>
+
+<div class="p-8 space-y-6">
+
+    <h1 class="text-3xl font-bold mb-4">JavaScript Alerts Automation Playground</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Basic Alerts -->
+        <button id="alertBtn" class="px-4 py-2 bg-blue-500 text-white rounded">Simple Alert</button>
+        <button id="confirmBtn" class="px-4 py-2 bg-green-500 text-white rounded">Confirm Alert</button>
+        <p id="confirmResult" class="text-gray-700"></p>
+
+        <button id="promptBtn" class="px-4 py-2 bg-yellow-500 text-black rounded">Prompt Alert</button>
+        <p id="promptResult" class="text-gray-700"></p>
+
+        <button id="delayedAlertBtn" class="px-4 py-2 bg-purple-500 text-white rounded">Delayed Alert (3s)</button>
+        <button id="chainedAlertBtn" class="px-4 py-2 bg-pink-500 text-white rounded">Chained Alerts</button>
+
+        <!-- Custom Modal -->
+        <button id="customModalBtn" class="px-4 py-2 bg-indigo-500 text-white rounded">Custom Modal Alert</button>
+        <div id="customModal" class="custom-modal">
+            <div class="custom-modal-content">
+                <p>This is a custom modal alert!</p>
+                <button id="closeModalBtn" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Close</button>
+            </div>
+        </div>
+
+        <button id="functionAlertBtn" class="px-4 py-2 bg-gray-700 text-white rounded">Trigger Alert via Function</button>
+
+        <!-- Advanced Alerts -->
+        <button id="dynamicAlertBtn" class="px-4 py-2 bg-teal-500 text-white rounded">Dynamic Content Alert</button>
+        <button id="ajaxAlertBtn" class="px-4 py-2 bg-orange-500 text-white rounded">AJAX-triggered Alert</button>
+        <button id="hoverAlertBtn" class="px-4 py-2 bg-cyan-500 text-white rounded">Hover-triggered Alert</button>
+        <button id="scrollAlertBtn" class="px-4 py-2 bg-lime-500 text-white rounded">Scroll-triggered Alert</button>
+        <button id="delayedChainBtn" class="px-4 py-2 bg-red-600 text-white rounded">Delayed Chained Alerts</button>
+
+    </div>
+</div>
+
+<script>
+    // ===== BASIC ALERTS =====
+    document.getElementById('alertBtn').addEventListener('click', () => alert('This is a simple alert!'));
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+      const result = confirm('Do you confirm this action?');
+      document.getElementById('confirmResult').textContent = `User selected: ${result}`;
+    });
+    document.getElementById('promptBtn').addEventListener('click', () => {
+      const name = prompt('Enter your name:', 'John Doe');
+      document.getElementById('promptResult').textContent = `You entered: ${name}`;
+    });
+    document.getElementById('delayedAlertBtn').addEventListener('click', () => {
+      setTimeout(() => alert('This alert appeared after 3 seconds!'), 3000);
+    });
+    document.getElementById('chainedAlertBtn').addEventListener('click', () => {
+      alert('First alert');
+      const conf = confirm('Do you want the second alert?');
+      if(conf) {
+        const name = prompt('Enter something for the third alert:');
+        alert(`You entered: ${name}`);
+      } else {
+        alert('Second alert skipped!');
+      }
+    });
+
+    // ===== CUSTOM MODAL =====
+    const customModal = document.getElementById('customModal');
+    document.getElementById('customModalBtn').addEventListener('click', () => customModal.classList.add('active'));
+    document.getElementById('closeModalBtn').addEventListener('click', () => customModal.classList.remove('active'));
+
+    // ===== FUNCTION ALERT =====
+    function triggerAlert(message) { alert(message); }
+    document.getElementById('functionAlertBtn').addEventListener('click', () => triggerAlert('Alert triggered via JS function!'));
+
+    // ===== ADVANCED ALERTS =====
+
+    // Dynamic content alert
+    document.getElementById('dynamicAlertBtn').addEventListener('click', () => {
+      const randomNum = Math.floor(Math.random() * 1000);
+      alert(`Dynamic alert with number: ${randomNum}`);
+    });
+
+    // Simulated AJAX alert
+    document.getElementById('ajaxAlertBtn').addEventListener('click', () => {
+      setTimeout(() => {
+        alert('AJAX call finished and triggered this alert!');
+      }, 2000);
+    });
+
+    // Hover-triggered alert
+    const hoverBtn = document.getElementById('hoverAlertBtn');
+    hoverBtn.addEventListener('mouseenter', () => alert('Hovered over button!'));
+
+    // Scroll-triggered alert
+    window.addEventListener('scroll', function scrollAlertOnce() {
+      if(window.scrollY > 150) {
+        alert('You have scrolled 150px!');
+        window.removeEventListener('scroll', scrollAlertOnce); // Trigger only once
+      }
+    });
+
+    // Delayed chained alerts
+    document.getElementById('delayedChainBtn').addEventListener('click', () => {
+      setTimeout(() => alert('Step 1 of delayed chain'), 1000);
+      setTimeout(() => {
+        const conf = confirm('Step 2: Confirm to continue?');
+        if(conf) {
+          setTimeout(() => {
+            const name = prompt('Step 3: Enter your name:');
+            alert(`Step 4: You entered ${name}`);
+          }, 1000);
+        } else {
+          alert('Step 2 canceled, chain stopped');
+        }
+      }, 2500);
+    });
+</script>
+
+</body>
+</html>
