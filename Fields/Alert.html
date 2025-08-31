@@ -67,7 +67,6 @@
         <button id="dynamicAlertBtn" class="px-4 py-2 bg-teal-500 text-white rounded">Dynamic Content Alert</button>
         <button id="ajaxAlertBtn" class="px-4 py-2 bg-orange-500 text-white rounded">AJAX-triggered Alert</button>
         <button id="hoverAlertBtn" class="px-4 py-2 bg-cyan-500 text-white rounded">Hover-triggered Alert</button>
-        <button id="scrollAlertBtn" class="px-4 py-2 bg-lime-500 text-white rounded">Scroll-triggered Alert</button>
         <button id="delayedChainBtn" class="px-4 py-2 bg-red-600 text-white rounded">Delayed Chained Alerts</button>
 
     </div>
@@ -126,13 +125,6 @@
     const hoverBtn = document.getElementById('hoverAlertBtn');
     hoverBtn.addEventListener('mouseenter', () => alert('Hovered over button!'));
 
-    // Scroll-triggered alert
-    window.addEventListener('scroll', function scrollAlertOnce() {
-      if(window.scrollY > 150) {
-        alert('You have scrolled 150px!');
-        window.removeEventListener('scroll', scrollAlertOnce); // Trigger only once
-      }
-    });
 
     // Delayed chained alerts
     document.getElementById('delayedChainBtn').addEventListener('click', () => {
