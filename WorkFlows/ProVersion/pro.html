@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Playground - Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<nav class="bg-purple-700 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <a href="../../index.html" class="hover:text-gray-200 font-bold">Automation Playground</a>
+            <ul class="flex space-x-6 text-white font-medium">
+                <li><a href="index.html" class="hover:underline">Home</a></li>
+                <li><a href="simple.html" class="hover:underline">Simple</a></li>
+                <li><a href="advanced.html" class="hover:underline">Advanced</a></li>
+                <li><a href="pro.html" class="underline">Pro</a></li>
+                <li><a href="proplus.html" class="hover:underline">Pro+</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Header -->
+<header class="text-center py-10">
+    <h2 class="text-3xl font-extrabold text-gray-800">🔹 Pro Automation Challenges</h2>
+    <p class="mt-2 text-gray-600">Complex UI automation scenarios for advanced testing practice.</p>
+</header>
+
+<!-- Challenges Grid -->
+<main class="max-w-6xl mx-auto grid gap-6 grid-cols-1 sm:grid-cols-2 px-6 pb-16">
+
+    <!-- Step 1: Dynamic Locator -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 1: Dynamic Locator</h3>
+        <p class="text-sm text-gray-600 mb-2">Click the button whose ID changes dynamically each time.</p>
+        <button id="btn-<random>" onclick="dynamicButton()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Click Me</button>
+        <p id="dynamicResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- Step 2: Drag & Drop -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 2: Drag & Drop</h3>
+        <p class="text-sm text-gray-600 mb-2">Drag the box into the drop area.</p>
+        <div class="flex space-x-6">
+            <div id="dragBox" draggable="true" class="w-24 h-24 bg-pink-500 text-white flex items-center justify-center cursor-move rounded">Drag</div>
+            <div id="dropArea" class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded">Drop here</div>
+        </div>
+        <p id="dragResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- Step 3: Multi-Step Form -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 3: Multi-Step Form</h3>
+        <p class="text-sm text-gray-600 mb-2">Fill step 1 and go to step 2.</p>
+        <div id="formStep1">
+            <input type="text" id="firstName" placeholder="First Name" class="border p-2 rounded w-full mb-2">
+            <input type="text" id="lastName" placeholder="Last Name" class="border p-2 rounded w-full mb-2">
+            <button onclick="nextStep()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Next</button>
+        </div>
+        <div id="formStep2" class="hidden">
+            <input type="email" id="email" placeholder="Email" class="border p-2 rounded w-full mb-2">
+            <button onclick="submitForm()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Submit</button>
+        </div>
+        <p id="formResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- Step 4: Date Picker -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 4: Date Picker</h3>
+        <p class="text-sm text-gray-600 mb-2">Select a date and see the selected value.</p>
+        <input type="date" id="dateInput" class="border p-2 rounded w-full mb-2">
+        <button onclick="showDate()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit</button>
+        <p id="dateResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- Step 5: Infinite Scroll -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg overflow-auto h-48">
+        <h3 class="font-bold text-purple-700">Step 5: Infinite Scroll</h3>
+        <p class="text-sm text-gray-600 mb-2">Scroll down to load more items.</p>
+        <ul id="infiniteList" class="space-y-1">
+            <!-- Items will be loaded here dynamically -->
+        </ul>
+    </div>
+
+    <!-- Step 6: Shadow DOM / Iframe -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 6: Iframe Example</h3>
+        <p class="text-sm text-gray-600 mb-2">Click button inside the iframe.</p>
+        <iframe id="iframeExample" class="w-full h-32 border" srcdoc='<button onclick="parent.postMessage(`iframeClicked` , `*`)">Click Me</button>'></iframe>
+        <p id="iframeResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+</main>
+
+<footer class="bg-purple-700 text-white text-center py-4">
+    <p class="text-sm">&copy; 2025 Automation Playground. All rights reserved.</p>
+</footer>
+
+<!-- Scripts -->
+<script>
+    // Dynamic Button
+    function dynamicButton() {
+      document.getElementById('dynamicResult').innerText = "Dynamic button clicked!";
+    }
+
+    // Drag & Drop
+    const dragBox = document.getElementById('dragBox');
+    const dropArea = document.getElementById('dropArea');
+
+    dragBox.addEventListener('dragstart', (e) => e.dataTransfer.setData('text/plain', 'dragBox'));
+    dropArea.addEventListener('dragover', (e) => e.preventDefault());
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const id = e.dataTransfer.getData('text');
+      if(id === 'dragBox') {
+        dropArea.appendChild(dragBox);
+        document.getElementById('dragResult').innerText = "Box dropped successfully!";
+      }
+    });
+
+    // Multi-Step Form
+    function nextStep() {
+      document.getElementById('formStep1').classList.add('hidden');
+      document.getElementById('formStep2').classList.remove('hidden');
+    }
+    function submitForm() {
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const email = document.getElementById('email').value;
+      document.getElementById('formResult').innerText = `Submitted: ${firstName} ${lastName}, ${email}`;
+    }
+
+    // Date Picker
+    function showDate() {
+      const date = document.getElementById('dateInput').value;
+      document.getElementById('dateResult').innerText = `Selected date: ${date}`;
+    }
+
+    // Infinite Scroll
+    const infiniteList = document.getElementById('infiniteList');
+    let itemCount = 0;
+    function loadItems(count = 10) {
+      for(let i=0; i<count; i++) {
+        const li = document.createElement('li');
+        li.innerText = `Item ${++itemCount}`;
+        li.className = "p-2 bg-gray-100 rounded";
+        infiniteList.appendChild(li);
+      }
+    }
+    loadItems();
+    infiniteList.addEventListener('scroll', () => {
+      if(infiniteList.scrollTop + infiniteList.clientHeight >= infiniteList.scrollHeight - 5) {
+        loadItems(5);
+      }
+    });
+
+    // Iframe message
+    window.addEventListener('message', (e) => {
+      if(e.data === 'iframeClicked') {
+        document.getElementById('iframeResult').innerText = "Button inside iframe clicked!";
+      }
+    });
+</script>
+</body>
+</html>

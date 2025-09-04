@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Automation ProPlus Playground</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        [tooltip] {
+          position: relative;
+          cursor: help;
+        }
+        [tooltip]::after {
+          content: attr(tooltip);
+          position: absolute;
+          opacity: 0;
+          transition: 0.2s;
+          padding: 6px 10px;
+          border-radius: 4px;
+          background: #4B0082;
+          color: #fff;
+          font-size: 12px;
+          white-space: pre-line;
+          top: 100%;
+          left: 0;
+          z-index: 10;
+          pointer-events: none;
+        }
+        [tooltip]:hover::after {
+          opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+
+<h1 class="text-3xl font-bold text-purple-800 text-center mb-8">UI Automation ProPlus Playground</h1>
+
+<!-- Scenario 1: Infinite Scroll -->
+<div class="bg-white p-6 rounded-lg shadow mb-6">
+    <h2 class="text-xl font-semibold text-purple-700 mb-2">1. Dynamic Content / Infinite Scroll</h2>
+    <p tooltip="Simulated product feed that loads items as you scroll. Automation challenge: Detect duplicates, track new items dynamically." class="mb-4">
+        Scrollable product feed:
+    </p>
+    <div id="scrollContainer" class="h-40 overflow-y-scroll border rounded p-2 bg-gray-50">
+        <!-- Items will be appended dynamically -->
+    </div>
+    <pre class="bg-gray-200 p-2 mt-4 rounded overflow-x-auto">
+Java/Playwright snippet:
+Set<String> seenItems = new HashSet<>();
+List&lt;WebElement&gt; items = driver.findElements(By.cssSelector(".product-item"));
+for(WebElement item : items) {
+    String id = item.getAttribute("data-id");
+    if(!seenItems.contains(id)) {
+        seenItems.add(id);
+        System.out.println("Validating item: " + id);
+    }
+}
+    </pre>
+</div>
+
+<!-- Scenario 2: Drag-and-Drop -->
+<div class="bg-white p-6 rounded-lg shadow mb-6">
+    <h2 class="text-xl font-semibold text-purple-700 mb-2">2. Drag-and-Drop with Overlapping Layers</h2>
+    <p tooltip="Simulated draggable box. Challenge: Pixel-accurate drag to target zone while handling overlaps.">
+        Drag the purple box into the drop zone:
+    </p>
+    <div class="relative h-32 border rounded mt-2 bg-gray-50">
+        <div id="dragBox" class="absolute w-16 h-16 bg-purple-500 text-white flex items-center justify-center rounded cursor-move top-4 left-4">
+            Drag
+        </div>
+        <div id="dropZone" class="absolute w-24 h-24 border-4 border-dashed border-purple-700 bottom-4 right-4 flex items-center justify-center text-purple-700">
+            Drop
+        </div>
+    </div>
+    <pre class="bg-gray-200 p-2 mt-4 rounded overflow-x-auto">
+Java/Playwright snippet:
+WebElement source = driver.findElement(By.id("dragBox"));
+WebElement target = driver.findElement(By.id("dropZone"));
+Actions actions = new Actions(driver);
+actions.clickAndHold(source).moveToElement(target).release().perform();
+    </pre>
+</div>
+
+<!-- Scenario 3: Multi-Step Modals -->
+<div class="bg-white p-6 rounded-lg shadow mb-6">
+    <h2 class="text-xl font-semibold text-purple-700 mb-2">3. Multi-Step Conditional Modals</h2>
+    <p tooltip="Click buttons to open modals that appear conditionally. Automation must detect dynamic modals and handle DOM changes.">
+        <button id="openModalBtn" class="px-4 py-2 bg-purple-500 text-white rounded">Open Modal</button>
+    </p>
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded shadow w-80">
+            <p>Step 1: Conditional Modal</p>
+            <button id="nextStepBtn" class="mt-4 px-4 py-2 bg-purple-500 text-white rounded">Next</button>
+            <button id="closeModalBtn" class="mt-2 px-4 py-2 bg-gray-300 text-gray-800 rounded">Close</button>
+        </div>
+    </div>
+    <pre class="bg-gray-200 p-2 mt-4 rounded overflow-x-auto">
+Java/Playwright snippet:
+WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+WebElement modal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".modal-dialog")));
+modal.findElement(By.cssSelector(".next-btn")).click();
+    </pre>
+</div>
+
+<!-- Scenario 4: OTP Handling -->
+<div class="bg-white p-6 rounded-lg shadow mb-6">
+    <h2 class="text-xl font-semibold text-purple-700 mb-2">4. OTP Validation Handling</h2>
+    <p tooltip="Simulated OTP input field. Challenge: Automate OTP retrieval and submission safely.">
+        Enter OTP for test user:
+        <input type="text" id="otpInput" class="border p-1 rounded ml-2 w-24" placeholder="123456">
+        <button id="submitOtp" class="px-3 py-1 bg-purple-500 text-white rounded ml-2">Submit</button>
+    </p>
+    <pre class="bg-gray-200 p-2 mt-4 rounded overflow-x-auto">
+Java/Playwright snippet:
+// Fetch OTP from API or test service
+String otp = OtpService.getLatestOtpForUser("testuser");
+driver.findElement(By.id("otpInput")).sendKeys(otp);
+driver.findElement(By.id("submitBtn")).click();
+    </pre>
+</div>
+
+<!-- Scenario 5: Cross-Browser Rendering -->
+<div class="bg-white p-6 rounded-lg shadow mb-6">
+    <h2 class="text-xl font-semibold text-purple-700 mb-2">5. Cross-Browser / Platform-Specific Rendering</h2>
+    <p tooltip="Simulated responsive boxes. Challenge: Validate layout and element visibility across browsers/devices.">
+        Resize the window to see layout differences:
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+        <div class="bg-purple-100 p-4 rounded text-center">Box 1</div>
+        <div class="bg-purple-200 p-4 rounded text-center">Box 2</div>
+        <div class="bg-purple-300 p-4 rounded text-center">Box 3</div>
+        <div class="bg-purple-400 p-4 rounded text-center">Box 4</div>
+    </div>
+    <pre class="bg-gray-200 p-2 mt-4 rounded overflow-x-auto">
+Java/Playwright snippet:
+WebDriver driverChrome = new ChromeDriver();
+WebDriver driverFirefox = new FirefoxDriver();
+driverChrome.get("https://example.com");
+driverFirefox.get("https://example.com");
+// Use visual validation or screenshot comparison
+    </pre>
+</div>
+
+<script>
+    // Scenario 1: Infinite scroll simulation
+    const scrollContainer = document.getElementById('scrollContainer');
+    let itemCount = 1;
+    function loadItems(count) {
+      for(let i=0; i<count; i++) {
+        const div = document.createElement('div');
+        div.className = 'p-2 border-b bg-white';
+        div.textContent = 'Product Item #' + itemCount++;
+        scrollContainer.appendChild(div);
+      }
+    }
+    loadItems(10);
+    scrollContainer.addEventListener('scroll', () => {
+      if(scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight) {
+        loadItems(5);
+      }
+    });
+
+    // Scenario 2: Drag-and-drop
+    const dragBox = document.getElementById('dragBox');
+    const dropZone = document.getElementById('dropZone');
+    let offsetX, offsetY, isDragging = false;
+
+    dragBox.addEventListener('mousedown', e => {
+      isDragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+    });
+    document.addEventListener('mousemove', e => {
+      if(isDragging) {
+        dragBox.style.left = e.pageX - offsetX - dragBox.parentElement.offsetLeft + 'px';
+        dragBox.style.top = e.pageY - offsetY - dragBox.parentElement.offsetTop + 'px';
+      }
+    });
+    document.addEventListener('mouseup', e => {
+      isDragging = false;
+      const dzRect = dropZone.getBoundingClientRect();
+      const dbRect = dragBox.getBoundingClientRect();
+      if(dbRect.left > dzRect.left && dbRect.right < dzRect.right &&
+         dbRect.top > dzRect.top && dbRect.bottom < dzRect.bottom) {
+           dropZone.textContent = 'Dropped!';
+           dropZone.classList.add('bg-purple-600', 'text-white');
+      }
+    });
+
+    // Scenario 3: Modals
+    const openModalBtn = document.getElementById('openModalBtn');
+    const modal = document.getElementById('modal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const nextStepBtn = document.getElementById('nextStepBtn');
+
+    openModalBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+    closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    nextStepBtn.addEventListener('click', () => {
+      alert('Next step clicked! Automation must detect this dynamically.');
+    });
+
+    // Scenario 4: OTP submit
+    const submitOtp = document.getElementById('submitOtp');
+    submitOtp.addEventListener('click', () => {
+      alert('OTP Submitted: ' + document.getElementById('otpInput').value);
+    });
+</script>
+
+</body>
+</html>

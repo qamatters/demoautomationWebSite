@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Playground - Simple</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<nav class="bg-purple-600 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <a href="../../index.html" class="hover:text-gray-200 font-bold">Automation Playground</a>
+            <ul class="flex space-x-6 text-white font-medium">
+                <li><a href="index.html" class="hover:underline">Home</a></li>
+                <li><a href="simple.html" class="underline">Simple</a></li>
+                <li><a href="advanced.html" class="hover:underline">Advanced</a></li>
+                <li><a href="pro.html" class="hover:underline">Pro</a></li>
+                <li><a href="proplus.html" class="hover:underline">Pro+</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Header -->
+<header class="text-center py-10">
+    <h2 class="text-3xl font-extrabold text-gray-800">🔹 Simple Automation Challenges</h2>
+    <p class="mt-2 text-gray-600">Beginner-friendly cases to practice locators and basic actions.</p>
+</header>
+
+<!-- Challenges Grid -->
+<main class="max-w-5xl mx-auto grid gap-6 grid-cols-1 sm:grid-cols-2 px-6 pb-16">
+
+    <!-- Step 1 -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 1: Click Button</h3>
+        <p class="text-sm text-gray-600 mb-2">Challenge: Locate and click the button below.</p>
+        <button onclick="alert('Button clicked! ✅')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Click Me</button>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 2: Enter Text</h3>
+        <p class="text-sm text-gray-600 mb-2">Challenge: Type text into the input field and submit.</p>
+        <input id="inputText" type="text" placeholder="Type here" class="border rounded px-3 py-2 w-full mb-2">
+        <button onclick="submitText()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Submit</button>
+        <p id="inputResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 3: Checkbox</h3>
+        <p class="text-sm text-gray-600 mb-2">Challenge: Select the checkbox below.</p>
+        <label class="flex items-center space-x-2">
+            <input type="checkbox" id="checkBox" class="h-4 w-4">
+            <span>Accept Terms</span>
+        </label>
+        <button onclick="checkBoxStatus()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Check</button>
+        <p id="checkResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 4: Dropdown</h3>
+        <p class="text-sm text-gray-600 mb-2">Challenge: Select an option from the dropdown.</p>
+        <select id="dropdown" class="border rounded px-3 py-2 w-full mb-2">
+            <option value="">--Choose--</option>
+            <option value="Selenium">Selenium</option>
+            <option value="Playwright">Playwright</option>
+            <option value="Cypress">Cypress</option>
+        </select>
+        <button onclick="getDropdownValue()" class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Submit</button>
+        <p id="dropdownResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Step 5: Radio Button</h3>
+        <p class="text-sm text-gray-600 mb-2">Challenge: Select one option from the radio buttons.</p>
+        <div class="space-y-2">
+            <label class="flex items-center space-x-2"><input type="radio" name="framework" value="Selenium"> <span>Selenium</span></label>
+            <label class="flex items-center space-x-2"><input type="radio" name="framework" value="Playwright"> <span>Playwright</span></label>
+            <label class="flex items-center space-x-2"><input type="radio" name="framework" value="Cypress"> <span>Cypress</span></label>
+        </div>
+        <button onclick="getRadioValue()" class="mt-2 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">Submit</button>
+        <p id="radioResult" class="mt-2 text-gray-700 text-sm"></p>
+    </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-purple-600 text-white text-center py-4">
+    <p class="text-sm">&copy; 2025 Automation Playground. All rights reserved.</p>
+</footer>
+
+<!-- Scripts -->
+<script>
+    function submitText() {
+      const val = document.getElementById('inputText').value;
+      document.getElementById('inputResult').innerText = val ? `You entered: ${val}` : 'Please enter text!';
+    }
+
+    function checkBoxStatus() {
+      const check = document.getElementById('checkBox').checked;
+      document.getElementById('checkResult').innerText = check ? 'Checkbox is checked ✅' : 'Checkbox is not checked ❌';
+    }
+
+    function getDropdownValue() {
+      const val = document.getElementById('dropdown').value;
+      document.getElementById('dropdownResult').innerText = val ? `You selected: ${val}` : 'Please select an option!';
+    }
+
+    function getRadioValue() {
+      const selected = document.querySelector('input[name="framework"]:checked');
+      document.getElementById('radioResult').innerText = selected ? `You chose: ${selected.value}` : 'No option selected!';
+    }
+</script>
+
+</body>
+</html>

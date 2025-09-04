@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro+ Automation Challenges</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
+<nav class="bg-purple-600 text-white p-4 fixed w-full z-50 flex justify-between items-center shadow-lg">
+    <a href="../../index.html" class="hover:text-gray-200 font-bold">Automation Playground</a>
+</nav>
+
+<div class="pt-28 max-w-7xl mx-auto p-6">
+
+    <!-- Tabs -->
+    <div class="flex space-x-4 mb-8 justify-center">
+        <a href="simple.html" class="tab-btn bg-purple-500 text-white px-5 py-2 rounded-full font-semibold transition duration-300">Simple</a>
+        <a href="advanced.html" class="tab-btn bg-indigo-500 text-white px-5 py-2 rounded-full font-semibold transition duration-300">Advanced</a>
+        <a href="pro.html" class="tab-btn bg-green-500 text-white px-5 py-2 rounded-full font-semibold transition duration-300">Pro</a>
+        <a href="proplus.html" class="tab-btn active bg-red-500 text-white px-5 py-2 rounded-full font-semibold transition duration-300">Pro+</a>
+    </div>
+
+    <!-- Pro+ Automation Challenges -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Challenge 1: Nested Modals -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">Challenge 1: Nested Modals</h2>
+            <p class="text-gray-700 mb-4">Open a modal and then trigger a nested modal inside it.</p>
+            <button id="openModal1" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">Open Modal</button>
+            <div id="modal1" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                <div class="bg-white rounded p-6 w-96 relative">
+                    <h3 class="font-bold mb-2">First Modal</h3>
+                    <button id="openNested" class="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-500">Open Nested Modal</button>
+                    <button id="closeModal1" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
+                </div>
+            </div>
+            <div id="nestedModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                <div class="bg-white rounded p-6 w-80 relative">
+                    <h3 class="font-bold mb-2">Nested Modal</h3>
+                    <p>Test nested modal handling for automation scripts.</p>
+                    <button id="closeNested" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Challenge 2: Table Sorting & Pagination -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6 overflow-auto">
+            <h2 class="text-xl font-bold mb-2">Challenge 2: Table Sorting & Pagination</h2>
+            <p class="text-gray-700 mb-4">Sort the table by name or age and navigate through pages.</p>
+            <table class="min-w-full border border-gray-300 mb-2">
+                <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-2 cursor-pointer" onclick="sortTable(0)">Name ▲▼</th>
+                    <th class="p-2 cursor-pointer" onclick="sortTable(1)">Age ▲▼</th>
+                    <th class="p-2">Country</th>
+                </tr>
+                </thead>
+                <tbody id="tableBody">
+                <tr><td>Deepak</td><td>37</td><td>India</td></tr>
+                <tr><td>Alice</td><td>28</td><td>USA</td></tr>
+                <tr><td>Bob</td><td>32</td><td>UK</td></tr>
+                <tr><td>Charlie</td><td>25</td><td>Canada</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Challenge 3: Multi-Tab Interaction -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">Challenge 3: Multi-Tab Interaction</h2>
+            <p class="text-gray-700 mb-4">Open a new tab and verify text on it.</p>
+            <button onclick="openTab()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">Open Tab</button>
+        </div>
+
+        <!-- Challenge 4: File Upload & Download -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">Challenge 4: File Upload</h2>
+            <p class="text-gray-700 mb-4">Upload a file and display its name.</p>
+            <input type="file" id="fileUpload" class="mb-2">
+            <p id="fileName" class="text-gray-600 font-medium"></p>
+        </div>
+
+        <!-- Challenge 5: Alerts & Confirmation Dialogs -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">Challenge 5: Alerts & Confirm</h2>
+            <p class="text-gray-700 mb-4">Test alerts and confirmation dialogs.</p>
+            <button onclick="alert('This is an alert!')" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300 mb-2">Show Alert</button>
+            <button onclick="confirmAction()" class="bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500 transition duration-300">Show Confirm</button>
+        </div>
+
+        <!-- Challenge 6: Shadow DOM -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">Challenge 6: Shadow DOM</h2>
+            <p class="text-gray-700 mb-4">Interact with a shadow DOM element.</p>
+            <div id="shadowHost" class="p-2 border rounded"></div>
+        </div>
+
+        <!-- Challenge 7: Dashboard Widget Interaction -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">Challenge 7: Dashboard Widgets</h2>
+            <p class="text-gray-700 mb-4">Click widget buttons and see value updates.</p>
+            <div class="flex space-x-2">
+                <button onclick="incrementWidget()" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Increment</button>
+                <p class="mt-1 font-medium">Value: <span id="widgetValue">0</span></p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // Nested Modals
+    const openModal1 = document.getElementById('openModal1');
+    const modal1 = document.getElementById('modal1');
+    const closeModal1 = document.getElementById('closeModal1');
+    const openNested = document.getElementById('openNested');
+    const nestedModal = document.getElementById('nestedModal');
+    const closeNested = document.getElementById('closeNested');
+
+    openModal1.onclick = () => modal1.classList.remove('hidden');
+    closeModal1.onclick = () => modal1.classList.add('hidden');
+    openNested.onclick = () => nestedModal.classList.remove('hidden');
+    closeNested.onclick = () => nestedModal.classList.add('hidden');
+
+    // Table Sorting
+    function sortTable(n) {
+        const table = document.getElementById("tableBody");
+        let rows = Array.from(table.rows);
+        let asc = table.getAttribute("data-sort") !== "asc";
+        rows.sort((a, b) => {
+            let x = a.cells[n].innerText.toLowerCase();
+            let y = b.cells[n].innerText.toLowerCase();
+            return x === y ? 0 : (x > y ? (asc ? 1 : -1) : (asc ? -1 : 1));
+        });
+        rows.forEach(r => table.appendChild(r));
+        table.setAttribute("data-sort", asc ? "asc" : "desc");
+    }
+
+    // Multi-tab
+    function openTab() {
+        const newTab = window.open("", "_blank");
+        newTab.document.write("<h1 style='font-family:sans-serif;'>New Tab Opened</h1>");
+    }
+
+    // File Upload
+    const fileUpload = document.getElementById('fileUpload');
+    const fileName = document.getElementById('fileName');
+    fileUpload.onchange = () => {
+        fileName.innerText = fileUpload.files[0] ? fileUpload.files[0].name : '';
+    };
+
+    // Confirm Dialog
+    function confirmAction() {
+        if(confirm('Do you want to continue?')) {
+            alert('Confirmed!');
+        } else {
+            alert('Cancelled!');
+        }
+    }
+
+    // Shadow DOM
+    const host = document.getElementById('shadowHost');
+    const shadowRoot = host.attachShadow({mode: 'open'});
+    const shadowButton = document.createElement('button');
+    shadowButton.innerText = 'Click Shadow Button';
+    shadowButton.className = 'bg-red-400 text-white px-3 py-1 rounded hover:bg-red-500';
+    shadowButton.onclick = () => alert('Shadow DOM button clicked!');
+    shadowRoot.appendChild(shadowButton);
+
+    // Dashboard Widget
+    let widgetValue = 0;
+    function incrementWidget() {
+        widgetValue++;
+        document.getElementById('widgetValue').innerText = widgetValue;
+    }
+</script>
+
+</body>
+</html>
