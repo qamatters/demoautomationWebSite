@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Pro Appointment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<!-- Navbar -->
+<nav class="bg-purple-600 text-white p-4 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+    <h1 class="text-xl font-bold">Healthcare Pro</h1>
+    <ul class="flex flex-wrap gap-6">
+        <li><a href="#book" class="hover:underline">Book Appointment</a></li>
+        <li><a href="#history" class="hover:underline">Appointment History</a></li>
+        <li><a href="#dashboard" class="hover:underline">Dashboard</a></li>
+    </ul>
+</nav>
+
+<!-- Appointment Booking Form -->
+<section id="book" class="bg-white p-6 rounded shadow mb-6">
+    <h2 class="text-2xl font-bold mb-4">Book a Patient Appointment</h2>
+    <div class="flex flex-col gap-4">
+        <!-- Patient Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="patientName" placeholder="Patient Name" class="border p-2 rounded">
+            <select id="patientType" class="border p-2 rounded">
+                <option value="">Patient Type</option>
+                <option value="New">New Patient</option>
+                <option value="Returning">Returning Patient</option>
+            </select>
+            <input type="tel" id="contact" placeholder="Contact Number" class="border p-2 rounded">
+            <input type="email" id="email" placeholder="Email" class="border p-2 rounded">
+        </div>
+
+        <!-- Appointment Details -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <select id="department" class="border p-2 rounded">
+                <option value="">Select Department</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="General">General</option>
+                <option value="Neurology">Neurology</option>
+            </select>
+            <select id="doctor" class="border p-2 rounded" disabled>
+                <option value="">Select Doctor</option>
+            </select>
+            <input type="date" id="date" class="border p-2 rounded">
+            <select id="time" class="border p-2 rounded" disabled>
+                <option value="">Select Time</option>
+            </select>
+            <select id="recurring" class="border p-2 rounded">
+                <option value="None">Recurring</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+            </select>
+            <textarea id="symptoms" rows="2" placeholder="Symptoms / Reason" class="border p-2 rounded md:col-span-2"></textarea>
+        </div>
+
+        <button class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800" onclick="bookAppointment()">Book Appointment</button>
+    </div>
+</section>
+
+<!-- Appointment History -->
+<section id="history" class="bg-white p-6 rounded shadow mb-6 overflow-x-auto">
+    <h2 class="text-2xl font-bold mb-4">Appointment History</h2>
+    <div class="flex flex-wrap gap-4 mb-4">
+        <input type="text" id="searchBox" placeholder="Search Patient or Doctor" class="border p-2 rounded" onkeyup="renderAppointments()">
+        <input type="date" id="startDate" class="border p-2 rounded" onchange="renderAppointments()">
+        <input type="date" id="endDate" class="border p-2 rounded" onchange="renderAppointments()">
+    </div>
+    <table class="min-w-full border border-gray-200 text-left">
+        <thead class="bg-gray-200">
+        <tr>
+            <th class="p-2 border">Patient</th>
+            <th class="p-2 border">Doctor</th>
+            <th class="p-2 border">Department</th>
+            <th class="p-2 border">Date</th>
+            <th class="p-2 border">Time</th>
+            <th class="p-2 border">Recurring</th>
+            <th class="p-2 border">Actions</th>
+        </tr>
+        </thead>
+        <tbody id="appointmentsTable"></tbody>
+    </table>
+</section>
+
+<!-- Dashboard -->
+<section id="dashboard" class="mb-6">
+    <div class="grid grid-cols-4 gap-6 mb-6">
+        <div class="bg-white p-6 rounded shadow text-center">
+            <h3 class="text-gray-500">Total</h3>
+            <p class="text-2xl font-bold" id="totalAppointments">0</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow text-center">
+            <h3 class="text-gray-500">Upcoming</h3>
+            <p class="text-2xl font-bold text-green-500" id="upcomingAppointments">0</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow text-center">
+            <h3 class="text-gray-500">Completed</h3>
+            <p class="text-2xl font-bold text-blue-500" id="completedAppointments">0</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow text-center">
+            <h3 class="text-gray-500">Cancelled</h3>
+            <p class="text-2xl font-bold text-red-500" id="cancelledAppointments">0</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded shadow">
+            <h2 class="text-xl font-bold mb-4">Appointments Over Time</h2>
+            <canvas id="appointmentsChart"></canvas>
+        </div>
+        <div class="bg-white p-6 rounded shadow">
+            <h2 class="text-xl font-bold mb-4">Status Distribution</h2>
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- Reschedule Modal -->
+<div id="rescheduleModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
+        <h3 class="text-xl font-semibold mb-4">Reschedule Appointment</h3>
+        <label class="block mb-2">New Date:</label>
+        <input type="date" id="newDate" class="w-full border p-2 rounded mb-4">
+        <label class="block mb-2">New Time:</label>
+        <select id="newTime" class="w-full border p-2 rounded mb-4">
+            <!-- Options will be populated dynamically -->
+        </select>
+        <div class="flex justify-end gap-3">
+            <button id="cancelModal" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+            <button id="saveModal" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const departmentDoctors = {
+      "Cardiology": ["Dr. Sharma","Dr. Verma"],
+      "Dermatology": ["Dr. Singh","Dr. Kapoor"],
+      "General": ["Dr. Mehta","Dr. Rao"],
+      "Neurology": ["Dr. Nair","Dr. Gupta"]
+    };
+
+    const doctorAvailability = {
+      "Dr. Sharma": ["10:00","11:00","14:00"],
+      "Dr. Verma": ["09:30","13:00","15:30"],
+      "Dr. Singh": ["10:15","11:45","16:00"],
+      "Dr. Kapoor": ["09:00","12:30","14:30"],
+      "Dr. Mehta": ["10:00","13:00","15:00"],
+      "Dr. Rao": ["09:30","11:30","14:30"],
+      "Dr. Nair": ["10:00","12:00","16:00"],
+      "Dr. Gupta": ["09:00","13:30","15:30"]
+    };
+
+    let appointments = JSON.parse(localStorage.getItem("appointments") || "[]");
+
+    // Populate doctors dynamically
+    document.getElementById('department').addEventListener('change', function(){
+      const dept = this.value;
+      const doctorSelect = document.getElementById('doctor');
+      doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
+      if(dept && departmentDoctors[dept]){
+        departmentDoctors[dept].forEach(d=>{
+          const opt = document.createElement('option');
+          opt.value=d; opt.text=d; doctorSelect.add(opt);
+        });
+        doctorSelect.disabled = false;
+      } else doctorSelect.disabled = true;
+
+      // Reset time
+      const timeSelect = document.getElementById('time');
+      timeSelect.innerHTML = '<option value="">Select Time</option>';
+      timeSelect.disabled = true;
+    });
+
+    // Populate times dynamically
+    document.getElementById('doctor').addEventListener('change', function(){
+      const doc = this.value;
+      const timeSelect = document.getElementById('time');
+      timeSelect.innerHTML = '<option value="">Select Time</option>';
+      if(doc && doctorAvailability[doc]){
+        doctorAvailability[doc].forEach(t=>{
+          const opt = document.createElement('option');
+          opt.value=t; opt.text=t; timeSelect.add(opt);
+        });
+        timeSelect.disabled = false;
+      } else timeSelect.disabled = true;
+    });
+
+    // Book appointment
+    function bookAppointment(){
+      const patient = document.getElementById('patientName').value;
+      const type = document.getElementById('patientType').value;
+      const contact = document.getElementById('contact').value;
+      const email = document.getElementById('email').value;
+      const department = document.getElementById('department').value;
+      const doctor = document.getElementById('doctor').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const recurring = document.getElementById('recurring').value;
+      const symptoms = document.getElementById('symptoms').value;
+
+      if(!patient || !type || !contact || !email || !department || !doctor || !date || !time){
+        alert("Please fill all required fields!");
+        return;
+      }
+
+      // Conflict check
+      if(appointments.some(a=>a.doctor===doctor && a.date===date && a.time===time)){
+        alert("This time slot is already booked!");
+        return;
+      }
+
+      const appt = {patient,type,contact,email,department,doctor,date,time,recurring,symptoms,status:"Upcoming"};
+      appointments.push(appt);
+      localStorage.setItem("appointments", JSON.stringify(appointments));
+      renderAppointments();
+      alert("Appointment booked successfully!");
+
+      // Reset form
+      document.getElementById('patientName').value='';
+      document.getElementById('patientType').value='';
+      document.getElementById('contact').value='';
+      document.getElementById('email').value='';
+      document.getElementById('department').value='';
+      document.getElementById('doctor').innerHTML='<option value="">Select Doctor</option>';
+      document.getElementById('doctor').disabled=true;
+      document.getElementById('date').value='';
+      document.getElementById('time').innerHTML='<option value="">Select Time</option>';
+      document.getElementById('time').disabled=true;
+      document.getElementById('recurring').value='None';
+      document.getElementById('symptoms').value='';
+    }
+
+    // Render appointments table
+    function renderAppointments(){
+      const tbody = document.getElementById('appointmentsTable');
+      const search = document.getElementById('searchBox').value.toLowerCase();
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+
+      tbody.innerHTML='';
+      const filtered = appointments.filter(a=>{
+        return (!search || a.patient.toLowerCase().includes(search) || a.doctor.toLowerCase().includes(search)) &&
+               (!startDate || a.date>=startDate) &&
+               (!endDate || a.date<=endDate);
+      });
+
+      filtered.forEach((a,i)=>{
+        tbody.innerHTML+=`
+        <tr>
+          <td class="p-2 border">${a.patient}</td>
+          <td class="p-2 border">${a.doctor}</td>
+          <td class="p-2 border">${a.department}</td>
+          <td class="p-2 border">${a.date}</td>
+          <td class="p-2 border">${a.time}</td>
+          <td class="p-2 border">${a.recurring}</td>
+          <td class="p-2 border">
+            <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="cancelAppointment(${i})">Cancel</button>
+          </td>
+        </tr>`;
+      });
+
+      updateDashboard();
+      updateCharts();
+    }
+
+    // Cancel appointment
+    function cancelAppointment(index){
+      if(confirm("Are you sure you want to cancel this appointment?")){
+        appointments[index].status="Cancelled";
+        localStorage.setItem("appointments", JSON.stringify(appointments));
+        renderAppointments();
+      }
+    }
+
+    // Dashboard Summary
+    function updateDashboard(){
+      document.getElementById('totalAppointments').innerText=appointments.length;
+      document.getElementById('upcomingAppointments').innerText=appointments.filter(a=>a.status==="Upcoming").length;
+      document.getElementById('completedAppointments').innerText=appointments.filter(a=>a.status==="Completed").length;
+      document.getElementById('cancelledAppointments').innerText=appointments.filter(a=>a.status==="Cancelled").length;
+    }
+
+    // Charts
+    const ctx1=document.getElementById('appointmentsChart').getContext('2d');
+    const ctx2=document.getElementById('statusChart').getContext('2d');
+    let apptChart,statusChart;
+
+    function updateCharts(){
+      // Appointments over time
+      const dates = [...new Set(appointments.map(a=>a.date))].sort();
+      const counts = dates.map(d=>appointments.filter(a=>a.date===d).length);
+      if(apptChart) apptChart.destroy();
+      apptChart=new Chart(ctx1,{
+        type:'line',
+        data:{labels:dates,datasets:[{label:'Appointments',data:counts,borderColor:'rgba(75,192,192,1)',fill:false}]}
+      });
+
+      // Status distribution
+      const statusCounts = {
+        Upcoming: appointments.filter(a=>a.status==="Upcoming").length,
+        Completed: appointments.filter(a=>a.status==="Completed").length,
+        Cancelled: appointments.filter(a=>a.status==="Cancelled").length
+      };
+      if(statusChart) statusChart.destroy();
+      statusChart=new Chart(ctx2,{
+        type:'pie',
+        data:{labels:['Upcoming','Completed','Cancelled'],datasets:[{data:[statusCounts.Upcoming,statusCounts.Completed,statusCounts.Cancelled],backgroundColor:['#22c55e','#3b82f6','#ef4444']}]}
+      });
+    }
+
+    renderAppointments();
+
+    // Toast Notification Function
+function showToast(message, type="success") {
+  const toast = document.createElement('div');
+  toast.innerText = message;
+  toast.className = `fixed top-5 right-5 px-4 py-2 rounded shadow text-white ${
+    type === "success" ? "bg-green-500" :
+    type === "error" ? "bg-red-500" : "bg-blue-500"
+  }`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// Reschedule Appointment
+function rescheduleAppointment(index) {
+  const appt = appointments[index];
+  const newDate = prompt("Enter new date (YYYY-MM-DD):", appt.date);
+  if(!newDate) return;
+  const newTime = prompt("Enter new time (HH:MM):", appt.time);
+  if(!newTime) return;
+
+  // Check for conflict
+  if(appointments.some((a,i)=>i!==index && a.doctor===appt.doctor && a.date===newDate && a.time===newTime)){
+    showToast("Time slot already booked!", "error");
+    return;
+  }
+
+  appt.date = newDate;
+  appt.time = newTime;
+  appt.status = "Upcoming";
+  localStorage.setItem("appointments", JSON.stringify(appointments));
+  renderAppointments();
+  showToast("Appointment rescheduled successfully!");
+}
+
+// Update renderAppointments table to include Reschedule button
+function renderAppointments(){
+  const tbody = document.getElementById('appointmentsTable');
+  const search = document.getElementById('searchBox').value.toLowerCase();
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  tbody.innerHTML='';
+  const filtered = appointments.filter(a=>{
+    return (!search || a.patient.toLowerCase().includes(search) || a.doctor.toLowerCase().includes(search)) &&
+           (!startDate || a.date>=startDate) &&
+           (!endDate || a.date<=endDate);
+  });
+
+  filtered.forEach((a,i)=>{
+    tbody.innerHTML+=`
+    <tr>
+      <td class="p-2 border">${a.patient}</td>
+      <td class="p-2 border">${a.doctor}</td>
+      <td class="p-2 border">${a.department}</td>
+      <td class="p-2 border">${a.date}</td>
+      <td class="p-2 border">${a.time}</td>
+      <td class="p-2 border">${a.recurring}</td>
+      <td class="p-2 border flex gap-1">
+        ${a.status === "Upcoming" ? `
+        <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="rescheduleAppointment(${i})">Reschedule</button>` : ''}
+        <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="cancelAppointment(${i})">Cancel</button>
+      </td>
+    </tr>`;
+  });
+
+  updateDashboard();
+  updateCharts();
+}
+
+    let currentRescheduleIndex = null;
+
+// Open Modal
+function openRescheduleModal(index) {
+  currentRescheduleIndex = index;
+  const appt = appointments[index];
+  const modal = document.getElementById('rescheduleModal');
+  const newDateInput = document.getElementById('newDate');
+  const newTimeSelect = document.getElementById('newTime');
+
+  newDateInput.value = appt.date;
+
+  // Populate time options dynamically based on doctor's availability
+  newTimeSelect.innerHTML = '';
+  const times = doctorAvailability[appt.doctor] || [];
+  times.forEach(t => {
+    const option = document.createElement('option');
+    option.value = t;
+    option.text = t;
+    if(t === appt.time) option.selected = true;
+    newTimeSelect.add(option);
+  });
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+// Close Modal
+function closeRescheduleModal() {
+  document.getElementById('rescheduleModal').classList.add('hidden');
+  document.getElementById('rescheduleModal').classList.remove('flex');
+}
+
+// Save changes
+document.getElementById('saveModal').addEventListener('click', () => {
+  const newDate = document.getElementById('newDate').value;
+  const newTime = document.getElementById('newTime').value;
+  if(!newDate || !newTime) { showToast('Select both date and time', 'error'); return; }
+
+  // Conflict check
+  if(appointments.some((a,i)=>i!==currentRescheduleIndex && a.doctor===appointments[currentRescheduleIndex].doctor && a.date===newDate && a.time===newTime)){
+    showToast("Time slot already booked!", "error");
+    return;
+  }
+
+  appointments[currentRescheduleIndex].date = newDate;
+  appointments[currentRescheduleIndex].time = newTime;
+  localStorage.setItem("appointments", JSON.stringify(appointments));
+  renderAppointments();
+  showToast("Appointment rescheduled successfully!");
+  closeRescheduleModal();
+});
+
+// Cancel button
+document.getElementById('cancelModal').addEventListener('click', closeRescheduleModal);
+
+
+</script>
+
+</body>
+</html>
