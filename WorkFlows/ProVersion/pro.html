@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automation Playground - Pro</title>
+    <title>Automation Playground - Pro Dropdowns</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulseHighlight { 0% { box-shadow:0 0 0px rgba(99,102,241,.5); } 50% { box-shadow:0 0 12px rgba(99,102,241,.7); } 100% { box-shadow:0 0 0px rgba(99,102,241,.5); } }
+        .pulse { animation: pulseHighlight 1s infinite; }
+        .opt:hover, .opt.active { background:#e0e7ff; font-weight:600; transform:scale(1.02); transition: all .15s ease; }
+        .chev { transition: transform .25s ease; }
+        .open .chev { transform: rotate(180deg); }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
@@ -26,72 +33,47 @@
 
 <!-- Header -->
 <header class="text-center py-10">
-    <h2 class="text-3xl font-extrabold text-gray-800">🔹 Pro Automation Challenges</h2>
-    <p class="mt-2 text-gray-600">Complex UI automation scenarios for advanced testing practice.</p>
+    <h2 class="text-3xl font-extrabold text-gray-800">🔹 Pro Automation Challenges - Dependent Dropdown</h2>
+    <p class="mt-2 text-gray-600">Advanced dependent dropdown simulation with alerts & delays.</p>
 </header>
 
-<!-- Challenges Grid -->
-<main class="max-w-6xl mx-auto grid gap-6 grid-cols-1 sm:grid-cols-2 px-6 pb-16">
+<main class="max-w-6xl mx-auto px-6 pb-16">
 
-    <!-- Step 1: Dynamic Locator -->
+    <!-- Dropdowns Single Card -->
     <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
-        <h3 class="font-bold text-purple-700">Step 1: Dynamic Locator</h3>
-        <p class="text-sm text-gray-600 mb-2">Click the button whose ID changes dynamically each time.</p>
-        <button id="btn-<random>" onclick="dynamicButton()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Click Me</button>
-        <p id="dynamicResult" class="mt-2 text-gray-700 text-sm"></p>
-    </div>
+        <h3 class="font-bold text-purple-700">Dependent Dropdowns</h3>
+        <p class="text-sm text-gray-600 mb-2">Select Country, State, and City in sequence.</p>
+        <div class="space-y-4">
+            <!-- Country Dropdown -->
+            <div class="dropdown relative" id="dd-country">
+                <button class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between">
+                    <span id="country-label" class="text-gray-700">Select Country</span>
+                    <span class="chev">▼</span>
+                </button>
+                <div id="country-menu" class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg max-h-60 overflow-y-auto"></div>
+                <p id="country-result" class="mt-2 text-gray-700 text-sm"></p>
+            </div>
 
-    <!-- Step 2: Drag & Drop -->
-    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
-        <h3 class="font-bold text-purple-700">Step 2: Drag & Drop</h3>
-        <p class="text-sm text-gray-600 mb-2">Drag the box into the drop area.</p>
-        <div class="flex space-x-6">
-            <div id="dragBox" draggable="true" class="w-24 h-24 bg-pink-500 text-white flex items-center justify-center cursor-move rounded">Drag</div>
-            <div id="dropArea" class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded">Drop here</div>
+            <!-- State Dropdown -->
+            <div class="dropdown relative" id="dd-state">
+                <button class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between">
+                    <span id="state-label" class="text-gray-700">Select State</span>
+                    <span class="chev">▼</span>
+                </button>
+                <div id="state-menu" class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg max-h-60 overflow-y-auto"></div>
+                <p id="state-result" class="mt-2 text-gray-700 text-sm"></p>
+            </div>
+
+            <!-- City Dropdown -->
+            <div class="dropdown relative" id="dd-city">
+                <button class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between">
+                    <span id="city-label" class="text-gray-700">Select City</span>
+                    <span class="chev">▼</span>
+                </button>
+                <div id="city-menu" class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg max-h-60 overflow-y-auto"></div>
+                <p id="city-result" class="mt-2 text-gray-700 text-sm"></p>
+            </div>
         </div>
-        <p id="dragResult" class="mt-2 text-gray-700 text-sm"></p>
-    </div>
-
-    <!-- Step 3: Multi-Step Form -->
-    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
-        <h3 class="font-bold text-purple-700">Step 3: Multi-Step Form</h3>
-        <p class="text-sm text-gray-600 mb-2">Fill step 1 and go to step 2.</p>
-        <div id="formStep1">
-            <input type="text" id="firstName" placeholder="First Name" class="border p-2 rounded w-full mb-2">
-            <input type="text" id="lastName" placeholder="Last Name" class="border p-2 rounded w-full mb-2">
-            <button onclick="nextStep()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Next</button>
-        </div>
-        <div id="formStep2" class="hidden">
-            <input type="email" id="email" placeholder="Email" class="border p-2 rounded w-full mb-2">
-            <button onclick="submitForm()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Submit</button>
-        </div>
-        <p id="formResult" class="mt-2 text-gray-700 text-sm"></p>
-    </div>
-
-    <!-- Step 4: Date Picker -->
-    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
-        <h3 class="font-bold text-purple-700">Step 4: Date Picker</h3>
-        <p class="text-sm text-gray-600 mb-2">Select a date and see the selected value.</p>
-        <input type="date" id="dateInput" class="border p-2 rounded w-full mb-2">
-        <button onclick="showDate()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit</button>
-        <p id="dateResult" class="mt-2 text-gray-700 text-sm"></p>
-    </div>
-
-    <!-- Step 5: Infinite Scroll -->
-    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg overflow-auto h-48">
-        <h3 class="font-bold text-purple-700">Step 5: Infinite Scroll</h3>
-        <p class="text-sm text-gray-600 mb-2">Scroll down to load more items.</p>
-        <ul id="infiniteList" class="space-y-1">
-            <!-- Items will be loaded here dynamically -->
-        </ul>
-    </div>
-
-    <!-- Step 6: Shadow DOM / Iframe -->
-    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
-        <h3 class="font-bold text-purple-700">Step 6: Iframe Example</h3>
-        <p class="text-sm text-gray-600 mb-2">Click button inside the iframe.</p>
-        <iframe id="iframeExample" class="w-full h-32 border" srcdoc='<button onclick="parent.postMessage(`iframeClicked` , `*`)">Click Me</button>'></iframe>
-        <p id="iframeResult" class="mt-2 text-gray-700 text-sm"></p>
     </div>
 
 </main>
@@ -100,70 +82,83 @@
     <p class="text-sm">&copy; 2025 Automation Playground. All rights reserved.</p>
 </footer>
 
-<!-- Scripts -->
 <script>
-    // Dynamic Button
-    function dynamicButton() {
-      document.getElementById('dynamicResult').innerText = "Dynamic button clicked!";
+    // Data
+    const DATA={ countries:["India","USA"], states:{India:{initial:["Delhi","Maharashtra"],extra:"Karnataka (special)"},USA:{initial:["California","Texas"],extra:null}}, cities:["Bangalore","Mysore"] };
+
+    // Helpers
+    const qs=(s,r=document)=>r.querySelector(s);
+    const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+    // Elements
+    const countryLabel=qs('#country-label'), stateLabel=qs('#state-label'), cityLabel=qs('#city-label');
+    const countryMenu=qs('#country-menu'), stateMenu=qs('#state-menu'), cityMenu=qs('#city-menu');
+    const countryRes=qs('#country-result'), stateRes=qs('#state-result'), cityRes=qs('#city-result');
+
+    function buildMenu(menu, items, onPick){
+      menu.innerHTML='';
+      items.forEach(it=>{
+        const div=document.createElement('div');
+        div.className='opt px-4 py-2 cursor-pointer';
+        let value=it,label=it,disabled=false;
+        if(typeof it==='object'){ value=it.value; label=it.label; if(it.disabled){div.classList.add('opacity-50','pointer-events-none'); disabled=true;} }
+        div.textContent=label;
+        div.dataset.value=value;
+        div.addEventListener('click',e=>{
+          e.stopPropagation();
+          if(value.includes('Karnataka')){if(!confirm('You are selecting a special State: '+label)) return;}
+          if(value==='Mysore'){
+            const ok=prompt('You have chosen this city: '+label+'. Type YES to confirm selection.');
+            if(!ok||ok.toUpperCase()!=='YES') return;
+          }
+          onPick(value,label);
+          closeAll();
+        });
+        menu.appendChild(div);
+      });
     }
 
-    // Drag & Drop
-    const dragBox = document.getElementById('dragBox');
-    const dropArea = document.getElementById('dropArea');
+    function openMenu(dd){ dd.classList.add('open'); qs('.dd-menu',dd).classList.remove('hidden'); }
+    function closeMenu(dd){ dd.classList.remove('open'); qs('.dd-menu',dd).classList.add('hidden'); }
+    function closeAll(){ qsa('.dropdown').forEach(closeMenu); }
 
-    dragBox.addEventListener('dragstart', (e) => e.dataTransfer.setData('text/plain', 'dragBox'));
-    dropArea.addEventListener('dragover', (e) => e.preventDefault());
-    dropArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const id = e.dataTransfer.getData('text');
-      if(id === 'dragBox') {
-        dropArea.appendChild(dragBox);
-        document.getElementById('dragResult').innerText = "Box dropped successfully!";
+    function randomDelay(min=1000,max=3000){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+    // Initial build
+    buildMenu(countryMenu,DATA.countries,v=>{ countryLabel.textContent=v; countryRes.textContent=v+' selected'; onCountrySelected(v); });
+
+    function onCountrySelected(country){
+      stateLabel.textContent='Select State'; cityLabel.textContent='Select City'; stateRes.textContent=''; cityRes.textContent='';
+      let states=DATA.states[country].initial.slice();
+      buildMenu(stateMenu,states,v=>{ stateLabel.textContent=v; stateRes.textContent=v+' selected'; onStateSelected(v,country); });
+      const extra=DATA.states[country].extra;
+      if(extra){ setTimeout(()=>{ states.push(extra); buildMenu(stateMenu,states,v=>{ stateLabel.textContent=v; stateRes.textContent=v+' selected'; onStateSelected(v,country); }); },1200); }
+    }
+
+    function onStateSelected(state){
+      cityLabel.textContent='Select City'; cityRes.textContent='';
+      let cities=DATA.cities.slice();
+      if(state.includes('Karnataka')){
+        buildMenu(cityMenu,[{value:'Bangalore',label:'Bangalore'},{value:'Mysore',label:'Mysore (unlocking...)',disabled:true}],(v,l)=>{ cityLabel.textContent=l; cityRes.textContent=l+' selected'; });
+        setTimeout(()=>{ buildMenu(cityMenu,cities,(v,l)=>{ cityLabel.textContent=l; cityRes.textContent=l+' selected'; }); }, randomDelay());
+      } else {
+        buildMenu(cityMenu,cities,(v,l)=>{ cityLabel.textContent=l; cityRes.textContent=l+' selected'; });
       }
+    }
+
+    // Dropdown toggle
+    qsa('.dropdown').forEach(dd=>{
+      const btn=qs('.dd-btn',dd);
+      btn.addEventListener('click',e=>{
+        e.stopPropagation();
+        const isHidden=qs('.dd-menu',dd).classList.contains('hidden');
+        closeAll();
+        if(isHidden) openMenu(dd);
+      });
     });
 
-    // Multi-Step Form
-    function nextStep() {
-      document.getElementById('formStep1').classList.add('hidden');
-      document.getElementById('formStep2').classList.remove('hidden');
-    }
-    function submitForm() {
-      const firstName = document.getElementById('firstName').value;
-      const lastName = document.getElementById('lastName').value;
-      const email = document.getElementById('email').value;
-      document.getElementById('formResult').innerText = `Submitted: ${firstName} ${lastName}, ${email}`;
-    }
-
-    // Date Picker
-    function showDate() {
-      const date = document.getElementById('dateInput').value;
-      document.getElementById('dateResult').innerText = `Selected date: ${date}`;
-    }
-
-    // Infinite Scroll
-    const infiniteList = document.getElementById('infiniteList');
-    let itemCount = 0;
-    function loadItems(count = 10) {
-      for(let i=0; i<count; i++) {
-        const li = document.createElement('li');
-        li.innerText = `Item ${++itemCount}`;
-        li.className = "p-2 bg-gray-100 rounded";
-        infiniteList.appendChild(li);
-      }
-    }
-    loadItems();
-    infiniteList.addEventListener('scroll', () => {
-      if(infiniteList.scrollTop + infiniteList.clientHeight >= infiniteList.scrollHeight - 5) {
-        loadItems(5);
-      }
-    });
-
-    // Iframe message
-    window.addEventListener('message', (e) => {
-      if(e.data === 'iframeClicked') {
-        document.getElementById('iframeResult').innerText = "Button inside iframe clicked!";
-      }
-    });
+    document.addEventListener('click',closeAll);
 </script>
+
 </body>
 </html>
