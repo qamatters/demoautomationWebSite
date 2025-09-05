@@ -1,123 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Custom Dropdown Simulation — Fully Functional</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Playground - Pro Dropdowns</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
-        body { font-family: 'Roboto Mono', monospace; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes pulseHighlight { 0% { box-shadow:0 0 0px rgba(99,102,241,.5); } 50% { box-shadow:0 0 12px rgba(99,102,241,.7); } 100% { box-shadow:0 0 0px rgba(99,102,241,.5); } }
-        .animate-fadeIn { animation: fadeIn .3s ease-out; }
         .pulse { animation: pulseHighlight 1s infinite; }
-        .card { background:linear-gradient(145deg,#fff,#f0f4f8); box-shadow:0 16px 32px rgba(0,0,0,.12); border-radius:2rem; padding:2rem; backdrop-filter: blur(8px); }
         .opt:hover, .opt.active { background:#e0e7ff; font-weight:600; transform:scale(1.02); transition: all .15s ease; }
         .chev { transition: transform .25s ease; }
         .open .chev { transform: rotate(180deg); }
-        .dd-menu { max-height:200px; overflow-y:auto; scroll-behavior:smooth; }
-        .opt { position: relative; }
-        .opt::after { content: ''; position:absolute; top:50%; right:.5rem; width:6px; height:6px; background:#6366f1; border-radius:50%; opacity:0; transform:translateY(-50%); transition:opacity .3s ease; }
-        .opt.active::after { opacity:1; animation: pulseHighlight 1s infinite; }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-tr from-indigo-100 via-sky-50 to-purple-100 flex items-center justify-center p-6">
-<div class="card w-full max-w-2xl">
-    <h1 class="text-3xl font-bold text-gray-800 text-center mb-2">🌐 Advanced Dependent Dropdown Simulation</h1>
-    <p class="text-sm text-gray-600 text-center mb-8">Keyboard + dynamic visual challenges · Pulsing highlights · Unlock delays</p>
-    <div class="grid gap-6">
-        <div class="dropdown relative" id="dd-country">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Country</label>
-            <button type="button" class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-4 focus:ring-indigo-300 shadow-md hover:shadow-lg transition-shadow">
-                <span id="country-label" class="text-gray-700">Select Country</span>
-                <svg class="chev h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg animate-fadeIn" id="country-menu"></div>
-        </div>
-        <div class="dropdown relative" id="dd-state">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">State</label>
-            <button type="button" class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-4 focus:ring-indigo-300 shadow-md hover:shadow-lg transition-shadow">
-                <span id="state-label" class="text-gray-700">Select State</span>
-                <svg class="chev h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg animate-fadeIn" id="state-menu"></div>
-            <div id="state-hint" class="text-xs text-indigo-600 mt-1 font-mono"></div>
-        </div>
-        <div class="dropdown relative" id="dd-city">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">City</label>
-            <button type="button" class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-4 focus:ring-indigo-300 shadow-md hover:shadow-lg transition-shadow">
-                <span id="city-label" class="text-gray-700">Select City</span>
-                <svg class="chev h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg animate-fadeIn" id="city-menu"></div>
-            <div id="city-hint" class="text-xs text-indigo-600 mt-1 font-mono"></div>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<nav class="bg-purple-700 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <a href="../../index.html" class="hover:text-gray-200 font-bold">Automation Playground</a>
+            <ul class="flex space-x-6 text-white font-medium">
+                <li><a href="index.html" class="hover:underline">Home</a></li>
+                <li><a href="simple.html" class="hover:underline">Simple</a></li>
+                <li><a href="advanced.html" class="hover:underline">Advanced</a></li>
+                <li><a href="pro.html" class="underline">Pro</a></li>
+                <li><a href="proplus.html" class="hover:underline">Pro+</a></li>
+            </ul>
         </div>
     </div>
-</div>
+</nav>
+
+<!-- Header -->
+<header class="text-center py-10">
+    <h2 class="text-3xl font-extrabold text-gray-800">🔹 Pro Automation Challenges - Dependent Dropdown</h2>
+    <p class="mt-2 text-gray-600">Advanced dependent dropdown simulation with alerts & delays.</p>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 pb-16">
+
+    <!-- Dropdowns Single Card -->
+    <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+        <h3 class="font-bold text-purple-700">Dependent Dropdowns</h3>
+        <p class="text-sm text-gray-600 mb-2">Select Country, State, and City in sequence.</p>
+        <div class="space-y-4">
+            <!-- Country Dropdown -->
+            <div class="dropdown relative" id="dd-country">
+                <button class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between">
+                    <span id="country-label" class="text-gray-700">Select Country</span>
+                    <span class="chev">▼</span>
+                </button>
+                <div id="country-menu" class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg max-h-60 overflow-y-auto"></div>
+                <p id="country-result" class="mt-2 text-gray-700 text-sm"></p>
+            </div>
+
+            <!-- State Dropdown -->
+            <div class="dropdown relative" id="dd-state">
+                <button class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between">
+                    <span id="state-label" class="text-gray-700">Select State</span>
+                    <span class="chev">▼</span>
+                </button>
+                <div id="state-menu" class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg max-h-60 overflow-y-auto"></div>
+                <p id="state-result" class="mt-2 text-gray-700 text-sm"></p>
+            </div>
+
+            <!-- City Dropdown -->
+            <div class="dropdown relative" id="dd-city">
+                <button class="dd-btn w-full bg-white border rounded-xl px-4 py-3 flex items-center justify-between">
+                    <span id="city-label" class="text-gray-700">Select City</span>
+                    <span class="chev">▼</span>
+                </button>
+                <div id="city-menu" class="dd-menu hidden absolute z-20 mt-2 w-full bg-white border rounded-xl shadow-lg max-h-60 overflow-y-auto"></div>
+                <p id="city-result" class="mt-2 text-gray-700 text-sm"></p>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="bg-purple-700 text-white text-center py-4">
+    <p class="text-sm">&copy; 2025 Automation Playground. All rights reserved.</p>
+</footer>
+
 <script>
-    const DATA = { countries:["India","USA"], states:{ India:{initial:["Delhi","Maharashtra"], extra:"Karnataka (special)"}, USA:{initial:["California","Texas"], extra:null} }, cities:["Bangalore","Mysore"] };
+    // Data
+    const DATA={ countries:["India","USA"], states:{India:{initial:["Delhi","Maharashtra"],extra:"Karnataka (special)"},USA:{initial:["California","Texas"],extra:null}}, cities:["Bangalore","Mysore"] };
+
+    // Helpers
     const qs=(s,r=document)=>r.querySelector(s);
     const qsa=(s,r=document)=>Array.from(r.querySelectorAll(s));
 
-    const ddCountry=qs('#dd-country'), ddState=qs('#dd-state'), ddCity=qs('#dd-city');
+    // Elements
     const countryLabel=qs('#country-label'), stateLabel=qs('#state-label'), cityLabel=qs('#city-label');
-    const countryMenu=qs('#country-menu');
-    const stateMenu=qs('#state-menu');
-    const cityMenu=qs('#city-menu');
-    const stateHint=qs('#state-hint'), cityHint=qs('#city-hint');
+    const countryMenu=qs('#country-menu'), stateMenu=qs('#state-menu'), cityMenu=qs('#city-menu');
+    const countryRes=qs('#country-result'), stateRes=qs('#state-result'), cityRes=qs('#city-result');
 
     function buildMenu(menu, items, onPick){
       menu.innerHTML='';
       items.forEach(it=>{
         const div=document.createElement('div');
         div.className='opt px-4 py-2 cursor-pointer';
-        let value=it, label=it;
-        if(typeof it==='object'){ value=it.value; label=it.label; if(it.disabled) div.classList.add('opacity-50','pointer-events-none'); }
+        let value=it,label=it,disabled=false;
+        if(typeof it==='object'){ value=it.value; label=it.label; if(it.disabled){div.classList.add('opacity-50','pointer-events-none'); disabled=true;} }
         div.textContent=label;
         div.dataset.value=value;
-        div.addEventListener('click', e=>{ e.stopPropagation(); onPick(value,label); closeAll(); });
+        div.addEventListener('click',e=>{
+          e.stopPropagation();
+          if(value.includes('Karnataka')){if(!confirm('You are selecting a special State: '+label)) return;}
+          if(value==='Mysore'){
+            const ok=prompt('You have chosen this city: '+label+'. Type YES to confirm selection.');
+            if(!ok||ok.toUpperCase()!=='YES') return;
+          }
+          onPick(value,label);
+          closeAll();
+        });
         menu.appendChild(div);
       });
     }
 
-    function openMenu(dd){ dd.classList.add('open'); qs('.dd-menu',dd).classList.remove('hidden'); highlightFirst(qs('.dd-menu',dd)); }
-    function closeMenu(dd){ dd.classList.remove('open'); qs('.dd-menu',dd).classList.add('hidden'); clearHighlight(qs('.dd-menu',dd)); }
+    function openMenu(dd){ dd.classList.add('open'); qs('.dd-menu',dd).classList.remove('hidden'); }
+    function closeMenu(dd){ dd.classList.remove('open'); qs('.dd-menu',dd).classList.add('hidden'); }
     function closeAll(){ qsa('.dropdown').forEach(closeMenu); }
 
-    function randomDelay(min=1000,max=8000){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function randomDelay(min=1000,max=3000){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-    function highlightFirst(menu){ const first=menu.querySelector('.opt'); if(first) first.classList.add('active'); }
-    function clearHighlight(menu){ qsa('.opt',menu).forEach(o=>o.classList.remove('active')); }
-    function moveHighlight(menu,dir){ const opts=qsa('.opt',menu).filter(o=>!o.classList.contains('opacity-50')); const current=opts.findIndex(o=>o.classList.contains('active')); let next=dir==='down'?current+1:current-1; if(next<0)next=opts.length-1;if(next>=opts.length)next=0; opts.forEach(o=>o.classList.remove('active')); opts[next].classList.add('active'); opts[next].scrollIntoView({block:'nearest'}); }
+    // Initial build
+    buildMenu(countryMenu,DATA.countries,v=>{ countryLabel.textContent=v; countryRes.textContent=v+' selected'; onCountrySelected(v); });
 
-    // Populate countries initially
-    buildMenu(countryMenu,DATA.countries,(v,l)=>{ countryLabel.textContent=l; onCountrySelected(v); });
-    buildMenu(stateMenu,DATA.states.India.initial,(v,l)=>{ stateLabel.textContent=l; onStateSelected(v); });
-    buildMenu(cityMenu,DATA.cities,(v,l)=>{ cityLabel.textContent=l; });
+    function onCountrySelected(country){
+      stateLabel.textContent='Select State'; cityLabel.textContent='Select City'; stateRes.textContent=''; cityRes.textContent='';
+      let states=DATA.states[country].initial.slice();
+      buildMenu(stateMenu,states,v=>{ stateLabel.textContent=v; stateRes.textContent=v+' selected'; onStateSelected(v,country); });
+      const extra=DATA.states[country].extra;
+      if(extra){ setTimeout(()=>{ states.push(extra); buildMenu(stateMenu,states,v=>{ stateLabel.textContent=v; stateRes.textContent=v+' selected'; onStateSelected(v,country); }); },1200); }
+    }
 
-    function onCountrySelected(country){ stateLabel.textContent='Select State'; cityLabel.textContent='Select City'; cityHint.textContent='';
-    let states=DATA.states[country].initial.slice();
-    buildMenu(stateMenu,states,(v,l)=>{ stateLabel.textContent=l; onStateSelected(v,country); });
-    const extra=DATA.states[country].extra;
-    if(extra){ setTimeout(()=>{ states.push(extra); buildMenu(stateMenu,states,(v,l)=>{ stateLabel.textContent=l; onStateSelected(v,country); }); stateHint.textContent='Extra state added for '+country; },1200); }}
+    function onStateSelected(state){
+      cityLabel.textContent='Select City'; cityRes.textContent='';
+      let cities=DATA.cities.slice();
+      if(state.includes('Karnataka')){
+        buildMenu(cityMenu,[{value:'Bangalore',label:'Bangalore'},{value:'Mysore',label:'Mysore (unlocking...)',disabled:true}],(v,l)=>{ cityLabel.textContent=l; cityRes.textContent=l+' selected'; });
+        setTimeout(()=>{ buildMenu(cityMenu,cities,(v,l)=>{ cityLabel.textContent=l; cityRes.textContent=l+' selected'; }); }, randomDelay());
+      } else {
+        buildMenu(cityMenu,cities,(v,l)=>{ cityLabel.textContent=l; cityRes.textContent=l+' selected'; });
+      }
+    }
 
-    function onStateSelected(state){ const isSpecial=state.toLowerCase().includes('karnataka'); cityLabel.textContent='Select City'; cityHint.textContent='';
-    let cities=DATA.cities.slice();
-    if(isSpecial){ buildMenu(cityMenu,[ {value:'Bangalore',label:'Bangalore'}, {value:'Mysore',label:'Mysore (unlocking...)',disabled:true} ],(v,l)=>{ cityLabel.textContent=l; }); cityHint.innerHTML=`Loading extra city data <span class="loading-icon">⏳</span>`;
-    setTimeout(()=>{ buildMenu(cityMenu,cities,(v,l)=>{ cityLabel.textContent=l; }); cityHint.textContent='City unlocked'; }, randomDelay()); } else { buildMenu(cityMenu,cities,(v,l)=>{ cityLabel.textContent=l; }); }}
-
+    // Dropdown toggle
     qsa('.dropdown').forEach(dd=>{
       const btn=qs('.dd-btn',dd);
-      btn.addEventListener('click',e=>{ e.stopPropagation(); const isHidden=qs('.dd-menu',dd).classList.contains('hidden'); closeAll(); if(isHidden) openMenu(dd); else closeMenu(dd); });
+      btn.addEventListener('click',e=>{
+        e.stopPropagation();
+        const isHidden=qs('.dd-menu',dd).classList.contains('hidden');
+        closeAll();
+        if(isHidden) openMenu(dd);
+      });
     });
+
     document.addEventListener('click',closeAll);
-    document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeAll();
-      const openDD=qsa('.dropdown.open')[0]; if(!openDD) return; const menu=qs('.dd-menu',openDD);
-      if(e.key==='ArrowDown'){ e.preventDefault(); moveHighlight(menu,'down'); }
-      if(e.key==='ArrowUp'){ e.preventDefault(); moveHighlight(menu,'up'); }
-      if(e.key==='Enter'){ const active=menu.querySelector('.opt.active'); if(active && !active.classList.contains('opacity-50')) active.click(); }
-    });
 </script>
+
 </body>
 </html>
