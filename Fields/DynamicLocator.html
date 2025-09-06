@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flaky Locator Test Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Generate a random suffix to simulate dynamic locator
+    function generateRandomId(base) {
+      const suffix = Math.floor(Math.random() * 1000);
+      return base + "_" + suffix;
+    }
+
+    function setDynamicIds() {
+      document.getElementById("usernameField").id = generateRandomId("username");
+      document.getElementById("passwordField").id = generateRandomId("password");
+    }
+
+    window.onload = function() {
+      setDynamicIds();
+    }
+  </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-purple-600 p-4 text-white shadow-md">
+  <ul class="flex space-x-4">
+    <li><a href="../index.html" class="hover:bg-purple-900 px-3 py-2 rounded">Home</a></li>
+    <li><a href="../fields.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Fields</a></li>
+    <li><a href="../WorkFlows/index.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Workflows</a></li>
+    <li><a href="../SpecialFields/index.html" class="font-bold hover:bg-purple-900 px-3 py-2 rounded">Specific Use Cases</a></li>
+  </ul>
+</nav>
+
+<!-- Login Container -->
+<div class="container mx-auto mt-20">
+  <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold text-center mb-6">Login Page</h2>
+
+    <!-- Dynamic Username & Password -->
+    <input type="text" id="usernameField" placeholder="Username"
+           class="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+    <input type="password" id="passwordField" placeholder="Password"
+           class="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+    <button id="loginBtn"
+            class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded transition">
+      Login
+    </button>
+
+    <p class="text-xs text-gray-500 mt-3 text-center">
+      Note: On every refresh, Username & Password IDs change dynamically.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>
