@@ -16,8 +16,21 @@
       document.getElementById("passwordField").id = generateRandomId("password");
     }
 
+    function handleLogin() {
+      const username = document.querySelector("input[placeholder='Username']").value;
+      const password = document.querySelector("input[placeholder='Password']").value;
+
+      if (username === "admin" && password === "password123") {
+        alert("✅ Login Successful! Welcome, " + username + " 🎉");
+      } else {
+        alert("❌ Invalid credentials! Reloading page...");
+        location.reload(); // reload page for retry
+      }
+    }
+
     window.onload = function() {
       setDynamicIds();
+      document.getElementById("loginBtn").addEventListener("click", handleLogin);
     }
   </script>
 </head>
@@ -51,7 +64,9 @@
     </button>
 
     <p class="text-xs text-gray-500 mt-3 text-center">
-      Note: On every refresh, Username & Password IDs change dynamically.
+      On every refresh, Username & Password IDs change dynamically.<br>
+      Try with <strong>admin / password123</strong> for success.<br>
+      Wrong login will reload the page for retry.
     </p>
   </div>
 </div>
