@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="claims.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="claims.js"></script>
 </head>
 <body class="bg-gray-100 p-6">
 
@@ -37,59 +36,88 @@
   </div>
 </div>
 
+<!-- Search -->
+<input type="text" id="searchBox" placeholder="Search by ID, Policy, or User..."
+       class="border p-2 rounded mb-4 w-full" onkeyup="renderTable()">
+
 <!-- Claim Table -->
 <table class="min-w-full border border-gray-200 text-left mb-4">
   <thead class="bg-gray-200">
-    <tr>
-      <th class="p-2 border">ID</th>
-      <th class="p-2 border">Policy</th>
-      <th class="p-2 border">Type</th>
-      <th class="p-2 border">Amount</th>
-      <th class="p-2 border">Status</th>
-      <th class="p-2 border">Date</th>
-      <th class="p-2 border">User</th>
-      <th class="p-2 border">Action</th>
-    </tr>
+  <tr>
+    <th class="p-2 border">ID</th>
+    <th class="p-2 border">Policy</th>
+    <th class="p-2 border">Type</th>
+    <th class="p-2 border">Amount</th>
+    <th class="p-2 border">Status</th>
+    <th class="p-2 border">Date</th>
+    <th class="p-2 border">User</th>
+    <th class="p-2 border">Action</th>
+  </tr>
   </thead>
   <tbody id="claimsTable"></tbody>
 </table>
 
 <script>
-if(sessionStorage.getItem('role')!=='admin'){ window.location.href='login.html'; }
+  if(sessionStorage.getItem('role')!=='admin'){ window.location.href='login.html'; }
 
-function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
+  function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
 
-function approveClaim(id){ changeStatus(id,'Approved'); renderTable(); }
-function rejectClaim(id){ changeStatus(id,'Rejected'); renderTable(); }
-function settleClaim(id){ changeStatus(id,'Settled'); renderTable(); }
+  // Load shared claims
+  let storedClaims = JSON.parse(localStorage.getItem('claimsData')) || claims;
+  claims = storedClaims;
 
-function renderTable(){
-  const tbody = document.getElementById('claimsTable');
-  tbody.innerHTML='';
-  claims.forEach(c=>{
-    tbody.innerHTML+=`<tr>
-      <td class="p-2 border">${c.id}</td>
-      <td class="p-2 border">${c.policy}</td>
-      <td class="p-2 border">${c.type}</td>
-      <td class="p-2 border">$${c.amount}</td>
-      <td class="p-2 border">${c.status}</td>
-      <td class="p-2 border">${c.date}</td>
-      <td class="p-2 border">${c.submittedBy}</td>
-      <td class="p-2 border">
-        ${c.status==='Review'?`<button class="bg-green-500 text-white px-2 py-1 rounded" onclick="approveClaim('${c.id}')">Approve</button>
-        <button class="bg-red-500 text-white px-2 py-1 rounded ml-1" onclick="rejectClaim('${c.id}')">Reject</button>
-        <button class="bg-gray-500 text-white px-2 py-1 rounded ml-1" onclick="settleClaim('${c.id}')">Settle</button>`:'--'}
-      </td>
-    </tr>`;
-  });
+  function approveClaim(id){
+    changeStatus(id,'Approved');
+    localStorage.setItem('claimsData', JSON.stringify(claims));
+    renderTable();
+  }
+  function rejectClaim(id){
+    changeStatus(id,'Rejected');
+    localStorage.setItem('claimsData', JSON.stringify(claims));
+    renderTable();
+  }
+  function settleClaim(id){
+    changeStatus(id,'Settled');
+    localStorage.setItem('claimsData', JSON.stringify(claims));
+    renderTable();
+  }
 
-  // Update summary cards
-  document.getElementById('totalClaims').innerText = claims.length;
-  document.getElementById('approvedClaims').innerText = claims.filter(c=>c.status==='Approved').length;
-  document.getElementById('reviewClaims').innerText = claims.filter(c=>c.status==='Review').length;
-  document.getElementById('rejectedClaims').innerText = claims.filter(c=>c.status==='Rejected').length;
-}
-renderTable();
+  function renderTable(){
+    const search = document.getElementById('searchBox').value.toLowerCase();
+    const tbody = document.getElementById('claimsTable');
+    tbody.innerHTML='';
+
+    const filtered = claims.filter(c =>
+      c.id.toLowerCase().includes(search) ||
+      c.policy.toLowerCase().includes(search) ||
+      c.submittedBy.toLowerCase().includes(search)
+    );
+
+    filtered.forEach(c=>{
+      tbody.innerHTML+=`<tr>
+        <td class="p-2 border">${c.id}</td>
+        <td class="p-2 border">${c.policy}</td>
+        <td class="p-2 border">${c.type}</td>
+        <td class="p-2 border">$${c.amount}</td>
+        <td class="p-2 border">${c.status}</td>
+        <td class="p-2 border">${c.date}</td>
+        <td class="p-2 border">${c.submittedBy}</td>
+        <td class="p-2 border">
+          ${c.status==='Review'
+            ? `<button class='bg-green-500 text-white px-2 py-1 rounded' onclick="approveClaim('${c.id}')">Approve</button>
+               <button class='bg-red-500 text-white px-2 py-1 rounded ml-1' onclick="rejectClaim('${c.id}')">Reject</button>
+               <button class='bg-gray-500 text-white px-2 py-1 rounded ml-1' onclick="settleClaim('${c.id}')">Settle</button>`
+            : '--'}
+        </td>
+      </tr>`;
+    });
+
+    document.getElementById('totalClaims').innerText = claims.length;
+    document.getElementById('approvedClaims').innerText = claims.filter(c=>c.status==='Approved').length;
+    document.getElementById('reviewClaims').innerText = claims.filter(c=>c.status==='Review').length;
+    document.getElementById('rejectedClaims').innerText = claims.filter(c=>c.status==='Rejected').length;
+  }
+  renderTable();
 </script>
 </body>
 </html>
