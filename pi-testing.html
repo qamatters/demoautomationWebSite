@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PI Testing Playground</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-purple-500 text-white p-4">
+    <ul class="flex space-x-4">
+      <li><a href="index.html" class="hover:underline">Home</a></li>
+      <li><a href="fields.html" class="hover:underline">Fields</a></li>
+      <li><a href="WorkFlows/index.html" class="hover:underline">Workflows</a></li>
+      <li><a href="pi-testing.html" class="font-bold underline">PI Testing</a></li>
+    </ul>
+  </nav>
+
+  <main class="max-w-7xl mx-auto p-6 space-y-6">
+    <header class="bg-white rounded shadow p-5">
+      <h1 class="text-3xl font-bold">API Testing Playground (PI Testing)</h1>
+      <p class="text-gray-600 mt-2">Run REST, GraphQL, and gRPC-oriented API testing scenarios from one page.</p>
+    </header>
+
+    <section class="bg-white rounded shadow p-5">
+      <h2 class="text-2xl font-semibold mb-4">REST Scenarios</h2>
+      <div id="rest-scenarios" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+    <section class="bg-white rounded shadow p-5">
+      <h2 class="text-2xl font-semibold mb-4">GraphQL Scenarios</h2>
+      <div id="graphql-scenarios" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+    <section class="bg-white rounded shadow p-5">
+      <h2 class="text-2xl font-semibold mb-2">gRPC Scenarios</h2>
+      <p class="text-sm text-gray-600 mb-4">Browsers cannot call raw gRPC directly. Use these scenario templates in tools like grpcurl, Postman, or k6.</p>
+      <div id="grpc-scenarios" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    </section>
+
+    <section class="bg-gray-900 rounded shadow p-5 text-gray-100">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-xl font-semibold">Result Console</h3>
+        <button id="clear-log" class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm">Clear</button>
+      </div>
+      <pre id="output" class="bg-black rounded p-4 overflow-auto max-h-[500px] text-xs"></pre>
+    </section>
+  </main>
+
+  <script>
+    const output = document.getElementById('output');
+
+    function log(title, payload) {
+      const now = new Date().toISOString();
+      const block = `[${now}] ${title}\n${typeof payload === 'string' ? payload : JSON.stringify(payload, null, 2)}\n${'-'.repeat(80)}\n`;
+      output.textContent = block + output.textContent;
+    }
+
+    async function runRequest({ name, url, method = 'GET', headers = {}, body, responseType = 'json' }) {
+      const init = { method, headers: { ...headers } };
+      if (body !== undefined) {
+        if (!init.headers['Content-Type']) {
+          init.headers['Content-Type'] = 'application/json';
+        }
+        init.body = init.headers['Content-Type'].includes('application/json') ? JSON.stringify(body) : body;
+      }
+
+      const start = performance.now();
+      const res = await fetch(url, init);
+      const elapsedMs = Math.round(performance.now() - start);
+      let parsed;
+
+      if (responseType === 'blob') {
+        const blob = await res.blob();
+        parsed = { type: blob.type || 'unknown', sizeBytes: blob.size };
+      } else if (responseType === 'text') {
+        parsed = await res.text();
+      } else {
+        const text = await res.text();
+        try {
+          parsed = JSON.parse(text);
+        } catch {
+          parsed = text;
+        }
+      }
+
+      log(`${name} | ${method} ${url}`, {
+        ok: res.ok,
+        status: res.status,
+        statusText: res.statusText,
+        elapsedMs,
+        response: parsed
+      });
+      return { res, parsed };
+    }
+
+    function addButtons(containerId, scenarios) {
+      const container = document.getElementById(containerId);
+      scenarios.forEach((scenario) => {
+        const card = document.createElement('div');
+        card.className = 'border rounded p-3 bg-gray-50 flex flex-col gap-2';
+
+        const title = document.createElement('h4');
+        title.className = 'font-semibold';
+        title.textContent = scenario.name;
+
+        const desc = document.createElement('p');
+        desc.className = 'text-sm text-gray-600';
+        desc.textContent = scenario.description;
+
+        const btn = document.createElement('button');
+        btn.className = 'bg-blue-600 text-white rounded px-3 py-2 hover:bg-blue-700 text-sm';
+        btn.textContent = 'Run Scenario';
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          btn.textContent = 'Running...';
+          try {
+            await scenario.run();
+          } catch (e) {
+            log(`${scenario.name} ERROR`, e.message || String(e));
+          } finally {
+            btn.disabled = false;
+            btn.textContent = 'Run Scenario';
+          }
+        });
+
+        card.append(title, desc, btn);
+        container.appendChild(card);
+      });
+    }
+
+    const restScenarios = [
+      {
+        name: 'GET Basic',
+        description: 'Simple GET request (working baseline).',
+        run: () => runRequest({ name: 'GET Basic', url: 'https://jsonplaceholder.typicode.com/posts/1' })
+      },
+      {
+        name: 'POST with Params + Headers + Body',
+        description: 'POST API with query params, custom headers, and request body.',
+        run: () => runRequest({
+          name: 'POST with Params + Headers + Body',
+          method: 'POST',
+          url: 'https://postman-echo.com/post?module=pi-testing&suite=rest',
+          headers: {
+            'X-QA-Suite': 'api-regression',
+            'Authorization': 'Bearer demo-token'
+          },
+          body: {
+            title: 'qa payload',
+            owner: 'automation',
+            active: true,
+            tags: ['post', 'headers', 'params']
+          }
+        })
+      },
+      {
+        name: 'PUT Update',
+        description: 'PUT request that replaces resource content.',
+        run: () => runRequest({
+          name: 'PUT Update',
+          method: 'PUT',
+          url: 'https://dummyjson.com/posts/1',
+          body: { title: 'updated by PUT', body: 'complete replace', userId: 11 }
+        })
+      },
+      {
+        name: 'PATCH Partial Update',
+        description: 'PATCH request for partial resource update.',
+        run: () => runRequest({
+          name: 'PATCH Partial Update',
+          method: 'PATCH',
+          url: 'https://dummyjson.com/posts/1',
+          body: { title: 'patched title only' }
+        })
+      },
+      {
+        name: 'DELETE Resource',
+        description: 'DELETE request scenario.',
+        run: () => runRequest({
+          name: 'DELETE Resource',
+          method: 'DELETE',
+          url: 'https://dummyjson.com/posts/1'
+        })
+      },
+      {
+        name: 'GET Pagination + Filter + Sort',
+        description: 'Pagination, filtering, and sorting in a GET request.',
+        run: () => runRequest({
+          name: 'GET Pagination + Filter + Sort',
+          url: 'https://dummyjson.com/products/search?q=phone&limit=5&skip=5&sortBy=price&order=desc'
+        })
+      },
+      {
+        name: 'CRUD Flow',
+        description: 'Create -> Read -> Update -> Delete end-to-end API flow.',
+        run: async () => {
+          const create = await runRequest({
+            name: 'CRUD Create',
+            method: 'POST',
+            url: 'https://dummyjson.com/posts/add',
+            body: { title: 'new post from CRUD', body: 'created in test flow', userId: 21 }
+          });
+
+          const id = create.parsed?.id || 1;
+          await runRequest({ name: 'CRUD Read', url: `https://dummyjson.com/posts/${id}` });
+          await runRequest({
+            name: 'CRUD Update',
+            method: 'PATCH',
+            url: `https://dummyjson.com/posts/${id}`,
+            body: { title: 'crud updated title' }
+          });
+          await runRequest({
+            name: 'CRUD Delete',
+            method: 'DELETE',
+            url: `https://dummyjson.com/posts/${id}`
+          });
+        }
+      },
+      {
+        name: 'Slow API (~10 seconds)',
+        description: 'API intentionally delayed for timeout/performance checks.',
+        run: () => runRequest({
+          name: 'Slow API (~10 seconds)',
+          url: 'https://httpbin.org/delay/10'
+        })
+      },
+      {
+        name: 'Failure Codes (4xx + 5xx)',
+        description: 'Runs 400/401/403/404 and 500/501/503 status code checks.',
+        run: async () => {
+          for (const code of [400, 401, 403, 404, 500, 501, 503]) {
+            await runRequest({
+              name: `Failure Code ${code}`,
+              url: `https://httpbin.org/status/${code}`,
+              responseType: 'text'
+            });
+          }
+        }
+      },
+      {
+        name: 'Response Types: JSON/XML/Text/PDF/Excel',
+        description: 'Validates API handling for different response payload types.',
+        run: async () => {
+          await runRequest({ name: 'Response JSON', url: 'https://httpbin.org/json' });
+          await runRequest({ name: 'Response XML', url: 'https://httpbin.org/xml', responseType: 'text' });
+          await runRequest({ name: 'Response Text', url: 'https://httpbin.org/robots.txt', responseType: 'text' });
+          await runRequest({ name: 'Response PDF', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', responseType: 'blob' });
+          await runRequest({ name: 'Response Excel', url: 'https://raw.githubusercontent.com/SheetJS/test_files/master/formats/xlsx/simple.xlsx', responseType: 'blob' });
+        }
+      }
+    ];
+
+    const graphQlScenarios = [
+      {
+        name: 'GraphQL Query (Countries)',
+        description: 'Basic GraphQL query with variables.',
+        run: () => runRequest({
+          name: 'GraphQL Query',
+          method: 'POST',
+          url: 'https://countries.trevorblades.com/',
+          body: {
+            query: 'query CountryByCode($code: ID!) { country(code: $code) { code name capital currency } }',
+            variables: { code: 'US' }
+          }
+        })
+      },
+      {
+        name: 'GraphQL Validation Failure',
+        description: 'GraphQL request with invalid field to trigger errors array.',
+        run: () => runRequest({
+          name: 'GraphQL Validation Failure',
+          method: 'POST',
+          url: 'https://countries.trevorblades.com/',
+          body: {
+            query: '{ country(code: "US") { name fakeFieldDoesNotExist } }'
+          }
+        })
+      },
+      {
+        name: 'GraphQL Syntax Failure',
+        description: 'Broken query syntax to validate parser error handling.',
+        run: () => runRequest({
+          name: 'GraphQL Syntax Failure',
+          method: 'POST',
+          url: 'https://countries.trevorblades.com/',
+          body: { query: 'query { country(code: "US") { name ' }
+        })
+      }
+    ];
+
+    const grpcScenarios = [
+      {
+        name: 'gRPC Unary - Happy Path',
+        description: 'Example: service call with valid request body and assertion on response fields.',
+        run: () => log('gRPC Unary - Happy Path', 'grpcurl -d "{\"id\":123}" api.example.com:443 my.company.UserService/GetUser')
+      },
+      {
+        name: 'gRPC Auth Failure',
+        description: 'Example: missing/invalid token should return UNAUTHENTICATED.',
+        run: () => log('gRPC Auth Failure', 'grpcurl api.example.com:443 my.company.UserService/GetUser  # expect code 16 UNAUTHENTICATED')
+      },
+      {
+        name: 'gRPC Deadline Exceeded',
+        description: 'Example: force short timeout against slow endpoint.',
+        run: () => log('gRPC Deadline Exceeded', 'grpcurl -max-time 1 api.example.com:443 my.company.ReportService/Generate  # expect code 4 DEADLINE_EXCEEDED')
+      },
+      {
+        name: 'gRPC Server Unavailable',
+        description: 'Example: endpoint down simulation should return UNAVAILABLE.',
+        run: () => log('gRPC Server Unavailable', 'grpcurl api.invalid.local:443 my.company.HealthService/Check  # expect code 14 UNAVAILABLE')
+      }
+    ];
+
+    addButtons('rest-scenarios', restScenarios);
+    addButtons('graphql-scenarios', graphQlScenarios);
+    addButtons('grpc-scenarios', grpcScenarios);
+
+    document.getElementById('clear-log').addEventListener('click', () => {
+      output.textContent = '';
+    });
+
+    log('Ready', 'PI Testing page loaded. Run scenarios from REST / GraphQL / gRPC sections.');
+  </script>
+</body>
+</html>
