@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Testing Scenarios | QA Automation Academy</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="assets/css/site.css" rel="stylesheet">
+  <script defer src="assets/js/site.js"></script>
+</head>
+<body class="bg-gray-100">
+<nav class="bg-purple-700 text-white p-4">
+  <div class="max-w-6xl mx-auto flex flex-wrap gap-4 items-center justify-between">
+    <a href="index.html" class="font-bold">QA Automation Academy</a>
+    <ul class="flex flex-wrap gap-4 text-sm">
+      <li><a href="fields.html">UI Fields</a></li>
+      <li><a href="WorkFlows/index.html">Workflows</a></li>
+      <li><a href="api-testing.html">API Testing</a></li>
+      <li><a href="security-testing.html" class="font-bold underline">Security Testing</a></li>
+      <li><a href="performance-testing.html">Performance Testing</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto p-6 space-y-8">
+  <section class="bg-white rounded-lg shadow p-6">
+    <h1 class="text-3xl font-bold mb-2">Security Testing Scenarios</h1>
+    <p class="text-gray-700">Learn to automate secure behavior checks alongside functional testing. These labs are safe simulations for QA learning.</p>
+  </section>
+
+  <section class="grid md:grid-cols-2 gap-6">
+    <article class="bg-white rounded-lg shadow p-6">
+      <h2 class="font-bold text-xl mb-3">Input Handling Lab</h2>
+      <p class="text-sm text-gray-700 mb-3">Ensures user input is rendered as plain text (safe behavior expected).</p>
+      <input id="reflect-input" class="w-full border rounded px-3 py-2 mb-2" placeholder="Type payload-like text e.g. <script>alert(1)</script>">
+      <button id="reflect-btn" class="bg-purple-700 text-white px-3 py-2 rounded">Render Safely</button>
+      <div id="reflect-output" class="mt-3 p-3 bg-gray-50 border rounded text-sm"></div>
+    </article>
+
+    <article class="bg-white rounded-lg shadow p-6">
+      <h2 class="font-bold text-xl mb-3">Password Policy Lab</h2>
+      <p class="text-sm text-gray-700 mb-3">Automate policy checks for sign-up and reset flows.</p>
+      <input id="pwd-input" type="password" class="w-full border rounded px-3 py-2 mb-2" placeholder="Enter test password">
+      <button id="pwd-check-btn" class="bg-purple-700 text-white px-3 py-2 rounded">Validate Policy</button>
+      <div id="pwd-output" class="mt-3 p-3 bg-gray-50 border rounded text-sm"></div>
+    </article>
+  </section>
+
+  <section class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">High-value security test checklist</h2>
+    <ul class="list-disc ml-5 text-sm text-gray-700 space-y-1">
+      <li>Verify session timeout and re-authentication for critical actions.</li>
+      <li>Validate role-based access control in UI and API layers.</li>
+      <li>Ensure sensitive data is masked in UI, logs, and network payloads.</li>
+      <li>Automate checks for secure headers (CSP, HSTS, X-Frame-Options).</li>
+      <li>Run dependency vulnerability scanning in CI/CD.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

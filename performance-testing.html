@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance Testing Scenarios | QA Automation Academy</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="assets/css/site.css" rel="stylesheet">
+  <script defer src="assets/js/site.js"></script>
+</head>
+<body class="bg-gray-100">
+<nav class="bg-purple-700 text-white p-4">
+  <div class="max-w-6xl mx-auto flex flex-wrap gap-4 items-center justify-between">
+    <a href="index.html" class="font-bold">QA Automation Academy</a>
+    <ul class="flex flex-wrap gap-4 text-sm">
+      <li><a href="fields.html">UI Fields</a></li>
+      <li><a href="WorkFlows/index.html">Workflows</a></li>
+      <li><a href="api-testing.html">API Testing</a></li>
+      <li><a href="security-testing.html">Security Testing</a></li>
+      <li><a href="performance-testing.html" class="font-bold underline">Performance Testing</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto p-6 space-y-8">
+  <section class="bg-white rounded-lg shadow p-6">
+    <h1 class="text-3xl font-bold mb-2">Performance Testing Scenarios</h1>
+    <p class="text-gray-700">Build performance intuition with browser rendering stress and synthetic API latency drills.</p>
+  </section>
+
+  <section class="grid md:grid-cols-2 gap-6">
+    <article class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-3">DOM Rendering Stress Lab</h2>
+      <button id="dom-btn" class="bg-purple-700 text-white px-3 py-2 rounded">Render 2,500 rows</button>
+      <p id="dom-time" class="metric mt-3 p-2 text-sm text-gray-800">No run yet.</p>
+      <div id="dom-mount" class="mt-3"></div>
+    </article>
+
+    <article class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-3">Slow API Simulation</h2>
+      <button id="slow-api-btn" class="bg-purple-700 text-white px-3 py-2 rounded">Run 1.8s simulation</button>
+      <p id="slow-api-output" class="metric mt-3 p-2 text-sm text-gray-800">No run yet.</p>
+      <p class="text-xs text-gray-500 mt-2">Useful for timeout, retry, and SLA assertion tests.</p>
+    </article>
+  </section>
+
+  <section class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Recommended toolchain for this academy</h2>
+    <div class="grid md:grid-cols-3 gap-4 text-sm">
+      <div class="p-4 border rounded">
+        <h3 class="font-semibold">Frontend</h3>
+        <p>Use Lighthouse, Web Vitals, and Playwright trace viewer.</p>
+      </div>
+      <div class="p-4 border rounded">
+        <h3 class="font-semibold">API / Backend</h3>
+        <p>Use k6 or JMeter with thresholds for p95 latency and error rates.</p>
+      </div>
+      <div class="p-4 border rounded">
+        <h3 class="font-semibold">Pipelines</h3>
+        <p>Run smoke performance suites on each PR and full load suites nightly.</p>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

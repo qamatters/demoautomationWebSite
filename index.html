@@ -1,26 +1,80 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Automation PlayGround</title>
+  <title>QA Automation Academy Playground</title>
+  <meta name="description" content="Product-grade QA automation playground with UI, API, security, and performance scenarios.">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="assets/css/site.css" rel="stylesheet">
+  <script defer src="assets/js/site.js"></script>
 </head>
-<body class="bg-gray-100">
-  
-<nav class="bg-purple-400 p-4 text-white">
-  <ul class="flex space-x-4">
-    <li><a href="index.html" class="hover:underline">Home</a></li>
-    <li><a href="fields.html" class="hover:underline">Fields</a></li>
-    <li><a href="WorkFlows/index.html" class="hover:underline">Workflows</a></li>
-    <li><a href="SpecialFields/index.html" class="font-bold">Specific Use Cases</a></li>
-  </ul>
-</nav>
+<body class="bg-gray-50 text-gray-900">
+  <nav class="bg-purple-700 text-white shadow">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap gap-4 items-center justify-between">
+      <a href="index.html" class="font-bold text-lg">QA Automation Academy</a>
+      <ul class="flex flex-wrap gap-4 text-sm">
+        <li><a href="fields.html" class="hover:underline">UI Fields</a></li>
+        <li><a href="WorkFlows/index.html" class="hover:underline">Workflows</a></li>
+        <li><a href="api-testing.html" class="hover:underline">API Testing</a></li>
+        <li><a href="security-testing.html" class="hover:underline">Security Testing</a></li>
+        <li><a href="performance-testing.html" class="hover:underline">Performance Testing</a></li>
+      </ul>
+    </div>
+  </nav>
 
-  <div class="p-6 text-center">
-    <h1 class="text-4xl font-bold mb-4">Welcome to Automation PlayGround</h1>
-    <p class="text-lg text-gray-700 max-w-2xl mx-auto">This site is designed for automation testers to practice UI interactions like forms, tables, alerts, iFrames, and e-commerce flows using Selenium, Playwright, and other tools.</p>
-  </div>
+  <header class="gradient-hero border-b border-purple-100">
+    <div class="max-w-6xl mx-auto px-4 py-14">
+      <p class="badge inline-block mb-3">Built for real-world SDET practice</p>
+      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">Practice end-to-end QA automation, not toy examples.</h1>
+      <p class="mt-4 text-lg text-gray-700 max-w-3xl">This platform now combines UI flows, API behavior, security checks, and performance experiments so learners can build job-ready automation portfolios and teams can use it as onboarding/training content.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="fields.html" class="bg-purple-700 text-white px-5 py-3 rounded-md font-semibold">Start UI Labs</a>
+        <a href="api-testing.html" class="border border-purple-700 text-purple-700 px-5 py-3 rounded-md font-semibold">Try API Console</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-12 space-y-12">
+    <section>
+      <h2 class="text-2xl font-bold mb-4">What makes this product-level?</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <article class="feature-card bg-white rounded-lg p-5">
+          <h3 class="font-bold mb-2">Realistic test domains</h3>
+          <p class="text-sm text-gray-700">Banking, insurance, healthcare, ecommerce, and forms with validation, state changes, and edge cases.</p>
+        </article>
+        <article class="feature-card bg-white rounded-lg p-5">
+          <h3 class="font-bold mb-2">API-ready scenarios</h3>
+          <p class="text-sm text-gray-700">Auth failures, rate limits, latency assertions, and status-code workflows in one hands-on console.</p>
+        </article>
+        <article class="feature-card bg-white rounded-lg p-5">
+          <h3 class="font-bold mb-2">Security-focused labs</h3>
+          <p class="text-sm text-gray-700">Input handling, password policy checks, and test case templates for OWASP-informed QA coverage.</p>
+        </article>
+        <article class="feature-card bg-white rounded-lg p-5">
+          <h3 class="font-bold mb-2">Performance drills</h3>
+          <p class="text-sm text-gray-700">Client render pressure, synthetic slow APIs, and baseline metrics to teach threshold-based assertions.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
+      <h2 class="text-2xl font-bold mb-3">Monetization-ready roadmap</h2>
+      <ul class="list-disc ml-5 space-y-2 text-gray-700">
+        <li>Freemium model: free labs + paid advanced packs (mobile, contract testing, CI/CD challenges).</li>
+        <li>Team subscriptions: instructor dashboard, assignment mode, and completion analytics.</li>
+        <li>Certification tracks: beginner to advanced QA automation badges tied to scenario completion.</li>
+        <li>Enterprise white-label version for internal training academies.</li>
+      </ul>
+      <p class="mt-4"><a href="docs/product-plan.md" class="text-purple-700 font-semibold hover:underline">View full product plan →</a></p>
+    </section>
+  </main>
+
+  <footer class="mt-10">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-sm flex flex-wrap gap-3 justify-between">
+      <p>© <span data-year></span> QA Automation Academy.</p>
+      <p>Designed for Selenium, Playwright, Cypress, REST Assured, JMeter, and OWASP testing workflows.</p>
+    </div>
+  </footer>
 </body>
 </html>

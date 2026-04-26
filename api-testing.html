@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Testing Scenarios | QA Automation Academy</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="assets/css/site.css" rel="stylesheet">
+  <script defer src="assets/js/site.js"></script>
+</head>
+<body class="bg-gray-100">
+<nav class="bg-purple-700 text-white p-4">
+  <div class="max-w-6xl mx-auto flex flex-wrap gap-4 items-center justify-between">
+    <a href="index.html" class="font-bold">QA Automation Academy</a>
+    <ul class="flex flex-wrap gap-4 text-sm">
+      <li><a href="fields.html">UI Fields</a></li>
+      <li><a href="WorkFlows/index.html">Workflows</a></li>
+      <li><a href="api-testing.html" class="font-bold underline">API Testing</a></li>
+      <li><a href="security-testing.html">Security Testing</a></li>
+      <li><a href="performance-testing.html">Performance Testing</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto p-6 space-y-8">
+  <section class="bg-white rounded-lg shadow p-6">
+    <h1 class="text-3xl font-bold mb-2">API Testing Scenarios</h1>
+    <p class="text-gray-700">Practice status code validation, schema checks, contract drift, auth, and rate-limiting using this local API simulator.</p>
+  </section>
+
+  <section class="grid lg:grid-cols-2 gap-6">
+    <article class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Mock API Console</h2>
+      <form id="api-console-form" class="space-y-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1">Method</label>
+          <select name="method" class="w-full border rounded px-3 py-2">
+            <option>GET</option>
+            <option>POST</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1">Endpoint</label>
+          <input name="endpoint" value="/v1/users/42" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1">Bearer Token</label>
+          <input name="token" value="qa-demo-token" class="w-full border rounded px-3 py-2" />
+        </div>
+        <button class="bg-purple-700 text-white px-4 py-2 rounded">Send Request</button>
+      </form>
+    </article>
+
+    <article class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Response</h2>
+      <pre id="api-console-output" class="code-block text-sm">{
+  "hint": "Submit a request to view status, body, and latency"
+}</pre>
+    </article>
+  </section>
+
+  <section class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Suggested automation use cases</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse">
+        <thead><tr class="bg-purple-100 text-left"><th class="p-2">Scenario</th><th class="p-2">Assertion Ideas</th></tr></thead>
+        <tbody>
+          <tr class="scenario-row"><td class="p-2">Unauthorized access</td><td class="p-2">401 status, error code, and no sensitive payload fields.</td></tr>
+          <tr class="scenario-row"><td class="p-2">Create order</td><td class="p-2">201 status, generated ID, and response time threshold.</td></tr>
+          <tr class="scenario-row"><td class="p-2">Rate limit</td><td class="p-2">429 status, retry-after value, and backoff behavior.</td></tr>
+          <tr class="scenario-row"><td class="p-2">Missing resource</td><td class="p-2">404 status with contract-compliant error object.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>
