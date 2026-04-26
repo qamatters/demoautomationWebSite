@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Testing Playground</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+<nav class="bg-purple-400 p-4 text-white">
+  <ul class="flex space-x-4">
+    <li><a href="index.html" class="hover:underline">Home</a></li>
+    <li><a href="fields.html" class="hover:underline">Fields</a></li>
+    <li><a href="WorkFlows/index.html" class="hover:underline">Workflows</a></li>
+    <li><a href="SpecialFields/index.html" class="hover:underline">Specific Use Cases</a></li>
+    <li><a href="api-testing.html" class="font-bold underline">API Testing</a></li>
+  </ul>
+</nav>
+
+<main class="max-w-6xl mx-auto p-6">
+  <h1 class="text-3xl font-bold text-center mb-2">API Testing Playground</h1>
+  <p class="text-gray-700 text-center mb-6">Use realistic REST, GraphQL, and gRPC scenarios. Inspect API structure, request details, and response payloads.</p>
+
+  <section class="bg-white rounded shadow p-4">
+    <div class="flex flex-wrap gap-2 border-b pb-3 mb-4">
+      <button data-tab="rest" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded">REST</button>
+      <button data-tab="graphql" class="tab-btn bg-gray-300 text-gray-800 px-4 py-2 rounded">GraphQL</button>
+      <button data-tab="grpc" class="tab-btn bg-gray-300 text-gray-800 px-4 py-2 rounded">gRPC</button>
+    </div>
+
+    <div id="tab-rest" class="tab-content space-y-4">
+      <h2 class="text-xl font-semibold">REST Example - Current Weather (Open-Meteo)</h2>
+      <p class="text-gray-600">This request fetches current weather for New York City coordinates. Real API call with no API key.</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-semibold mb-2">Request Details</h3>
+          <pre id="rest-request" class="bg-gray-900 text-green-300 p-3 rounded text-sm overflow-x-auto"></pre>
+          <button class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded" onclick="copyCurl('rest')">Copy cURL</button>
+          <button class="mt-2 ml-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded" onclick="runRequest('rest')">Run Request</button>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Response</h3>
+          <pre id="rest-response" class="bg-gray-100 border p-3 rounded text-sm overflow-x-auto min-h-[220px]">Click "Run Request" to fetch response.</pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-graphql" class="tab-content hidden space-y-4">
+      <h2 class="text-xl font-semibold">GraphQL Example - Countries API</h2>
+      <p class="text-gray-600">This query retrieves country information useful for location-based testing flows.</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-semibold mb-2">Request Details</h3>
+          <pre id="graphql-request" class="bg-gray-900 text-green-300 p-3 rounded text-sm overflow-x-auto"></pre>
+          <button class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded" onclick="copyCurl('graphql')">Copy cURL</button>
+          <button class="mt-2 ml-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded" onclick="runRequest('graphql')">Run Request</button>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Response</h3>
+          <pre id="graphql-response" class="bg-gray-100 border p-3 rounded text-sm overflow-x-auto min-h-[220px]">Click "Run Request" to fetch response.</pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-grpc" class="tab-content hidden space-y-4">
+      <h2 class="text-xl font-semibold">gRPC Example - WeatherService.GetCurrentWeather</h2>
+      <p class="text-gray-600">Browsers cannot directly call native gRPC endpoints. This tab focuses on gRPC request anatomy for automation learning.</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-semibold mb-2">Request Details</h3>
+          <pre id="grpc-request" class="bg-gray-900 text-green-300 p-3 rounded text-sm overflow-x-auto"></pre>
+          <button class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded" onclick="copyCurl('grpc')">Copy cURL</button>
+          <button class="mt-2 ml-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded" onclick="runRequest('grpc')">Show Sample Response</button>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Response</h3>
+          <pre id="grpc-response" class="bg-gray-100 border p-3 rounded text-sm overflow-x-auto min-h-[220px]">Click "Show Sample Response" to view a realistic gRPC payload.</pre>
+        </div>
+      </div>
+    </div>
+
+    <p id="toast" class="hidden fixed bottom-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow">Copied!</p>
+  </section>
+</main>
+
+<script>
+  const apiScenarios = {
+    rest: {
+      method: 'GET',
+      url: 'https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.0060&current=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone=auto',
+      headers: {
+        'Accept': 'application/json'
+      }
+    },
+    graphql: {
+      method: 'POST',
+      url: 'https://countries.trevorblades.com/graphql',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: {
+        query: `query CountryByCode($code: ID!) {
+  country(code: $code) {
+    code
+    name
+    capital
+    currency
+    emoji
+    languages { name }
+  }
+}`,
+        variables: { code: 'US' }
+      }
+    },
+    grpc: {
+      method: 'POST',
+      url: 'https://weather.example.internal:443/weather.v1.WeatherService/GetCurrentWeather',
+      protocol: 'gRPC',
+      headers: {
+        'Content-Type': 'application/grpc',
+        'Authorization': 'Bearer <token>'
+      },
+      proto: `service WeatherService {
+  rpc GetCurrentWeather (WeatherRequest) returns (WeatherReply);
+}
+
+message WeatherRequest {
+  string city = 1;
+  string country_code = 2;
+  string unit = 3;
+}
+
+message WeatherReply {
+  string city = 1;
+  double temperature = 2;
+  string condition = 3;
+  int64 observed_at_epoch = 4;
+}`,
+      message: {
+        city: 'New York',
+        country_code: 'US',
+        unit: 'celsius'
+      }
+    }
+  };
+
+  function formatRequestDetails(type) {
+    const cfg = apiScenarios[type];
+    let output = `${cfg.method} ${cfg.url}\n`;
+    if (cfg.protocol) output += `Protocol: ${cfg.protocol}\n`;
+    output += '\nHeaders:\n' + JSON.stringify(cfg.headers, null, 2);
+    if (cfg.body) output += '\n\nBody:\n' + JSON.stringify(cfg.body, null, 2);
+    if (cfg.proto) output += '\n\nProto Definition:\n' + cfg.proto;
+    if (cfg.message) output += '\n\nRequest Message:\n' + JSON.stringify(cfg.message, null, 2);
+    return output;
+  }
+
+  function getCurl(type) {
+    const cfg = apiScenarios[type];
+    const headerFlags = Object.entries(cfg.headers || {})
+      .map(([k, v]) => `-H "${k}: ${v}"`)
+      .join(' ');
+
+    if (type === 'graphql') {
+      return `curl -X ${cfg.method} "${cfg.url}" ${headerFlags} --data '${JSON.stringify(cfg.body)}'`;
+    }
+
+    if (type === 'grpc') {
+      return `grpcurl -d '${JSON.stringify(cfg.message)}' -H "Authorization: Bearer <token>" weather.example.internal:443 weather.v1.WeatherService/GetCurrentWeather`;
+    }
+
+    return `curl -X ${cfg.method} "${cfg.url}" ${headerFlags}`;
+  }
+
+  async function runRequest(type) {
+    const responseBox = document.getElementById(`${type}-response`);
+    responseBox.textContent = 'Loading...';
+
+    try {
+      if (type === 'rest') {
+        const res = await fetch(apiScenarios.rest.url, {
+          method: 'GET',
+          headers: apiScenarios.rest.headers
+        });
+        const data = await res.json();
+        responseBox.textContent = JSON.stringify(data, null, 2);
+        return;
+      }
+
+      if (type === 'graphql') {
+        const res = await fetch(apiScenarios.graphql.url, {
+          method: 'POST',
+          headers: apiScenarios.graphql.headers,
+          body: JSON.stringify(apiScenarios.graphql.body)
+        });
+        const data = await res.json();
+        responseBox.textContent = JSON.stringify(data, null, 2);
+        return;
+      }
+
+      if (type === 'grpc') {
+        const sample = {
+          city: 'New York',
+          temperature: 17.9,
+          condition: 'Partly Cloudy',
+          observed_at_epoch: 1777425600,
+          source: 'WeatherService.GetCurrentWeather',
+          note: 'Sample response shown because browser cannot call native gRPC directly.'
+        };
+        responseBox.textContent = JSON.stringify(sample, null, 2);
+      }
+    } catch (error) {
+      responseBox.textContent = `Error: ${error.message}`;
+    }
+  }
+
+  async function copyCurl(type) {
+    try {
+      await navigator.clipboard.writeText(getCurl(type));
+      showToast('cURL copied to clipboard');
+    } catch {
+      showToast('Clipboard blocked. Copy manually from request details.');
+    }
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 1800);
+  }
+
+  function setActiveTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('bg-blue-600', 'text-white');
+      btn.classList.add('bg-gray-300', 'text-gray-800');
+    });
+
+    document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+    const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+    activeBtn.classList.remove('bg-gray-300', 'text-gray-800');
+    activeBtn.classList.add('bg-blue-600', 'text-white');
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(button => {
+    button.addEventListener('click', () => setActiveTab(button.dataset.tab));
+  });
+
+  document.getElementById('rest-request').textContent = formatRequestDetails('rest') + '\n\nExample cURL:\n' + getCurl('rest');
+  document.getElementById('graphql-request').textContent = formatRequestDetails('graphql') + '\n\nExample cURL:\n' + getCurl('graphql');
+  document.getElementById('grpc-request').textContent = formatRequestDetails('grpc') + '\n\nExample cURL:\n' + getCurl('grpc');
+</script>
+</body>
+</html>
