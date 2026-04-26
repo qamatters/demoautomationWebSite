@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance API Testing Scenarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-purple-500 p-4 text-white">
+    <ul class="flex flex-wrap gap-4">
+      <li><a href="../../index.html" class="hover:underline">Home</a></li>
+      <li><a href="index.html" class="hover:underline">API Scenarios</a></li>
+      <li><a href="security-testing.html" class="hover:underline">Security Testing</a></li>
+    </ul>
+  </nav>
+
+  <main class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4">Performance API Testing</h1>
+    <p class="text-gray-700 mb-6">Starter scenarios for load, stress, and endurance API testing that learners can automate later with k6/JMeter.</p>
+
+    <div class="space-y-4">
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">1) Baseline Latency Check</h2>
+        <p class="text-sm text-gray-700 mb-2">Measure average response time under light traffic.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">curl -s -w "\nTime: %{time_total}s\n" "https://api.open-meteo.com/v1/forecast?latitude=35&longitude=139&current=temperature_2m"</pre>
+      </article>
+
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">2) Burst Traffic (Load Test)</h2>
+        <p class="text-sm text-gray-700 mb-2">Check whether API remains stable for short, concurrent bursts.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">seq 1 30 | xargs -I{} -P 10 curl -s -o /dev/null -w "%{http_code}\n" "https://jsonplaceholder.typicode.com/comments/{}"</pre>
+      </article>
+
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">3) Stress to Failure Threshold</h2>
+        <p class="text-sm text-gray-700 mb-2">Gradually increase virtual users and capture first error/timeout point.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">k6 run stress-test.js</pre>
+      </article>
+
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">4) Soak / Endurance</h2>
+        <p class="text-sm text-gray-700 mb-2">Run a long-duration test to identify memory leaks and performance drift.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">k6 run --duration 30m --vus 20 soak-test.js</pre>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

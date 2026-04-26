@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security API Testing Scenarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-purple-500 p-4 text-white">
+    <ul class="flex flex-wrap gap-4">
+      <li><a href="../../index.html" class="hover:underline">Home</a></li>
+      <li><a href="index.html" class="hover:underline">API Scenarios</a></li>
+      <li><a href="performance-testing.html" class="hover:underline">Performance Testing</a></li>
+    </ul>
+  </nav>
+
+  <main class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4">Security API Testing</h1>
+    <p class="text-gray-700 mb-6">These learner-focused examples demonstrate common API security validations without requiring paid tools.</p>
+
+    <div class="space-y-4">
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">1) Auth Token Missing / Invalid</h2>
+        <p class="text-sm text-gray-700 mb-2">Validate that protected endpoints return 401/403 when token is missing or malformed.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">curl -i https://reqres.in/api/users/2</pre>
+      </article>
+
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">2) Broken Object Level Authorization (BOLA) Check</h2>
+        <p class="text-sm text-gray-700 mb-2">Verify users cannot fetch or mutate resources owned by other users.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">curl -X GET https://jsonplaceholder.typicode.com/posts/10</pre>
+      </article>
+
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">3) Rate Limit Verification</h2>
+        <p class="text-sm text-gray-700 mb-2">Send repeated calls and verify 429 with retry hints when threshold is crossed.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">for i in {1..40}; do curl -s -o /dev/null -w "%{http_code}\n" https://api.open-meteo.com/v1/forecast?latitude=40.71\&longitude=-74.01\&current=temperature_2m; done</pre>
+      </article>
+
+      <article class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-xl font-semibold mb-2">4) Input Injection Guardrails</h2>
+        <p class="text-sm text-gray-700 mb-2">Attempt payloads with special characters and ensure validation rejects unsafe input.</p>
+        <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto">curl -X POST https://reqres.in/api/users -H "Content-Type: application/json" -d '{"name":"\" OR 1=1 --","job":"tester"}'</pre>
+      </article>
+    </div>
+  </main>
+</body>
+</html>
